@@ -1,0 +1,42 @@
+[project]
+name = "level"
+version = "0.1.0"
+description = "Level: RFx drafting, quote reading and bid levelling prototype"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "streamlit",
+    "anthropic",
+    "pydantic>=2",
+    "sqlalchemy>=2",
+    "pandas",
+    "openpyxl",
+    "python-docx",
+    "pymupdf",
+    "pillow",
+    "python-dotenv",
+    "pillow-heif>=1.8.1",
+    "xlrd>=2.0.2",
+]
+
+[dependency-groups]
+dev = ["pytest", "ruff"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["level"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "app"]
+markers = ["live: calls the real Claude API (costs money)"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["docs/qa"]  # QA throwaway scripts, not app code
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]

@@ -1,0 +1,31 @@
+# Read by `streamlit run` from the working directory (repo root locally, /app in Docker).
+[server]
+headless = true
+fileWatcherType = "none"   # no reloading on file changes: faster start, nothing to watch in prod
+maxUploadSize = 50         # MB per vendor file
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"    # hides Streamlit's own "Deploy" button and developer menu
+showErrorDetails = "none"  # an unexpected error never shows a traceback or file paths
+
+# Light, calm theme (docs/UX_GUIDE.md section 3): one deep-teal primary colour, Inter, grey sidebar.
+[theme]
+base = "light"
+primaryColor = "#0F6E6E"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F6F8"
+textColor = "#1F2933"
+linkColor = "#0F6E6E"
+borderColor = "#E3E7EB"
+dataframeHeaderBackgroundColor = "#F4F6F8"
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap, sans-serif"
+baseFontSize = 14
+baseRadius = "6px"
+showSidebarBorder = true
+
+[theme.sidebar]
+backgroundColor = "#F1F3F5"
+secondaryBackgroundColor = "#FFFFFF"

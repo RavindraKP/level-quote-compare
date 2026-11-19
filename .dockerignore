@@ -1,0 +1,14 @@
+.venv
+.git
+.env
+.env.*
+!.env.example
+data/level.db*
+data/uploads
+data/demo-snapshot
+data/.link_secret
+data/exports
+evals/results/work
+**/__pycache__
+.pytest_cache
+.ruff_cache

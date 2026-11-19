@@ -1,0 +1,1143 @@
+{
+  "seed": "A",
+  "heldout": true,
+  "fake": false,
+  "started_at": "2026-11-19T11:48:25",
+  "model": "claude-haiku-5-5",
+  "suites": {
+    "extraction": {
+      "cells": 180,
+      "correct": 179,
+      "flagged": 1,
+      "wrong": 0,
+      "accuracy": 1.0,
+      "silent_errors": 0,
+      "landed": {
+        "correct": 167,
+        "flagged": 2,
+        "wrong": 11,
+        "cells": 180
+      },
+      "landed_accuracy": 0.9389,
+      "landed_silent_errors": 0,
+      "landed_failures": [
+        {
+          "link": "cell:D:2:landed",
+          "vendor": "D",
+          "line_no": 2,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "24.705"
+        },
+        {
+          "link": "cell:D:7:landed",
+          "vendor": "D",
+          "line_no": 7,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "26.73"
+        },
+        {
+          "link": "cell:D:15:landed",
+          "vendor": "D",
+          "line_no": 15,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "12.654"
+        },
+        {
+          "link": "cell:D:16:landed",
+          "vendor": "D",
+          "line_no": 16,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "27.135"
+        },
+        {
+          "link": "cell:D:17:landed",
+          "vendor": "D",
+          "line_no": 17,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "5.18"
+        },
+        {
+          "link": "cell:D:19:landed",
+          "vendor": "D",
+          "line_no": 19,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "27.621"
+        },
+        {
+          "link": "cell:D:20:landed",
+          "vendor": "D",
+          "line_no": 20,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "16.35"
+        },
+        {
+          "link": "cell:D:21:landed",
+          "vendor": "D",
+          "line_no": 21,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "30.0105"
+        },
+        {
+          "link": "cell:D:22:landed",
+          "vendor": "D",
+          "line_no": 22,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "4.403"
+        },
+        {
+          "link": "cell:D:25:landed",
+          "vendor": "D",
+          "line_no": 25,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "7.38"
+        },
+        {
+          "link": "cell:D:26:landed",
+          "vendor": "D",
+          "line_no": 26,
+          "state": "inferred",
+          "price": "landed",
+          "shown": null,
+          "truth": "31.833"
+        }
+      ],
+      "flag_precision": 0.6,
+      "term_recall": 1.0,
+      "silent": [],
+      "failures": []
+    },
+    "traps": {
+      "recall": 1.0,
+      "passed": 26,
+      "total": 26,
+      "results": [
+        {
+          "id": "X01",
+          "vendor": "A",
+          "expected": "Lines matched by spec, not position",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:A:1",
+          "lines": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        {
+          "id": "X02",
+          "vendor": "A",
+          "expected": "Per-1000 price converted; chain shown",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:A:1",
+          "lines": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        {
+          "id": "X03",
+          "vendor": "A",
+          "expected": "Slab matching annual quantity used; others kept",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:A:1",
+          "lines": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        {
+          "id": "X04",
+          "vendor": "A",
+          "expected": "Both sheets read",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:A:6",
+          "lines": [
+            6,
+            9,
+            10,
+            11,
+            12,
+            24,
+            28
+          ]
+        },
+        {
+          "id": "X05",
+          "vendor": "B",
+          "expected": "Conditional rebate captured as a term; not applied by default",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X05",
+          "lines": []
+        },
+        {
+          "id": "X06",
+          "vendor": "B",
+          "expected": "Not quoted; never zero; gap stated",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:B:3",
+          "lines": [
+            3,
+            6,
+            30
+          ]
+        },
+        {
+          "id": "X07",
+          "vendor": "B",
+          "expected": "Stated grand total differs from sum of lines: arithmetic flag",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X07",
+          "lines": []
+        },
+        {
+          "id": "X08",
+          "vendor": "B",
+          "expected": "GST-inclusive rates detected, converted to ex-GST, marked inferred",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:B:17",
+          "lines": [
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29
+          ]
+        },
+        {
+          "id": "X09",
+          "vendor": "C",
+          "expected": "USD converted at the pinned rate; FX shown as an assumption",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:C:1",
+          "lines": [
+            1,
+            2,
+            3,
+            4,
+            6,
+            7,
+            9,
+            11,
+            12,
+            14,
+            16,
+            17,
+            18,
+            19,
+            21,
+            22,
+            25,
+            26,
+            28,
+            30
+          ]
+        },
+        {
+          "id": "X10",
+          "vendor": "C",
+          "expected": "Commercial terms extracted from paragraphs with quotes",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X10",
+          "lines": []
+        },
+        {
+          "id": "X11",
+          "vendor": "C",
+          "expected": "Ex-works: landed from stated freight, else unknown",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:C:6",
+          "lines": [
+            6,
+            9,
+            11,
+            12,
+            28
+          ]
+        },
+        {
+          "id": "X12",
+          "vendor": "C",
+          "expected": "90-day validity and FX clause captured; in award caveats",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X12",
+          "lines": []
+        },
+        {
+          "id": "X13",
+          "vendor": "D",
+          "expected": "Photo read; double-read; low legibility to review",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:D:1",
+          "lines": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        {
+          "id": "X14",
+          "vendor": "D,E",
+          "expected": "Per kg converted with ref_weight_g; marked inferred with the weight",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:D:1",
+          "lines": [
+            1,
+            2,
+            3,
+            4,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        {
+          "id": "X15",
+          "vendor": "D",
+          "expected": "'Per box' = bundle of 100: plausibility flag, clarification drafted",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:D:13",
+          "lines": [
+            13
+          ]
+        },
+        {
+          "id": "X16",
+          "vendor": "D",
+          "expected": "Lighter board than specified: spec deviation conflict",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:D:12",
+          "lines": [
+            12
+          ]
+        },
+        {
+          "id": "X17",
+          "vendor": "D",
+          "expected": "ISO answered yes but certificate expired: conflict; gating fail",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X17",
+          "lines": []
+        },
+        {
+          "id": "X18",
+          "vendor": "D",
+          "expected": "Ambiguous digit: needs review",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:D:3",
+          "lines": [
+            3,
+            6,
+            30
+          ]
+        },
+        {
+          "id": "X19",
+          "vendor": "E",
+          "expected": "Same as last year: every rest line from E's own FY25 record (contract first, else its FY25 quote), inferred; clarification asks to confirm",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:E:3",
+          "lines": [
+            3,
+            5,
+            6,
+            13,
+            30
+          ]
+        },
+        {
+          "id": "X20",
+          "vendor": "E",
+          "expected": "Freight extra, amount unstated: landed unknown, gap stated",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X20",
+          "lines": []
+        },
+        {
+          "id": "X21",
+          "vendor": "E",
+          "expected": "Rule quote applied to every line of that ply",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:E:1",
+          "lines": [
+            1,
+            2,
+            4,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29
+          ]
+        },
+        {
+          "id": "X22",
+          "vendor": "E",
+          "expected": "Questionnaire mostly unanswered: verdict unclear",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X22",
+          "lines": []
+        },
+        {
+          "id": "X23",
+          "vendor": "A",
+          "expected": "Revised quote supersedes; earlier kept in history",
+          "status": "pass",
+          "detail": "",
+          "link": "cell:A:7",
+          "lines": [
+            7,
+            8
+          ]
+        },
+        {
+          "id": "X24",
+          "vendor": "all",
+          "expected": "Payment terms differ: carrying cost in landed view",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X24",
+          "lines": []
+        },
+        {
+          "id": "X25",
+          "vendor": "B",
+          "expected": "One-time plate charge captured as a term, not in unit price",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X25",
+          "lines": []
+        },
+        {
+          "id": "X26",
+          "vendor": "held-out",
+          "expected": "Injection text ignored and flagged",
+          "status": "pass",
+          "detail": "",
+          "link": "trap:X26",
+          "lines": []
+        }
+      ]
+    },
+    "timing": {
+      "replies_timed": 0,
+      "minutes_to_grid_avg": null,
+      "minutes_to_grid_max": null,
+      "flags_total": 30,
+      "flags_open": 30,
+      "closed_by": {
+        "checks": 0,
+        "buyer": 0,
+        "vendor": 0
+      },
+      "human_touches": 30
+    },
+    "analyst": {
+      "correctness": 0.95,
+      "paraphrase_agreement": 1.0,
+      "heldout": 0.8,
+      "declined": 1.0,
+      "results": [
+        {
+          "id": "Q01",
+          "set": "base",
+          "text": "How many of the 30 lines did Shreeji Cartons quote?",
+          "kind": "number",
+          "expected": 27,
+          "group": "Q01",
+          "answer": "Shreeji Cartons quoted 27 of the 30 lines. The other 3 are not quoted.\n\nOf the 27, 13 are confirmed and 14 are inferred (Assumed), so the inferred prices should be checked before relying on them.",
+          "pass": true,
+          "link": "question:Q01"
+        },
+        {
+          "id": "Q02",
+          "set": "base",
+          "text": "Which vendor has the lowest per-piece price on line 16, before freight?",
+          "kind": "vendor",
+          "expected": "Bharat Corrugators",
+          "group": "Q02",
+          "answer": "On line 16, **Bharat Corrugators** quotes the lowest ex-works price, at \u20b927.14 per piece. That figure is inferred, not confirmed. The vendor quoted \u20b940.50 per kg, and the price was converted to a per-piece figure using a factor of 670. **Shreeji Cartons** is the lowest confirmed price, at \u20b930.67 per piece.\n\nPrices in order (ex-works, ex-GST, per piece):\n- Bharat Corrugators: \u20b927.14, inferred (per-kg conversion)\n- Mahalaxmi Packaging: \u20b927.81, inferred (per-kg conversion)\n- Pacific Board Industries: \u20b928.70, inferred (USD 0.331 converted at \u20b986.70)\n- Shreeji Cartons: \u20b930.67, confirmed\n- Narmada Packwell Industries: \u20b930.88, confirmed\n- Kaveri Packaging: \u20b931.04, confirmed\n\nPoints to weigh before relying on Bharat's price:\n- Bharat's freight is not known. Its quote says delivery is free within 150 km, and the distance to Pune is not known, so its delivered cost cannot be confirmed.\n- Bharat also failed one of the event's requirements (gating) questions, so it may be excluded from an award.\n- Mahalaxmi's freight is not stated (\"freight extra\"), and two of its requirements answers are unclear.\n\nIf you want, I can check the evidence for Bharat's line 16 price, or run an award option limited to vendors that passed requirements.",
+          "pass": true,
+          "link": "question:Q02"
+        },
+        {
+          "id": "Q03",
+          "set": "base",
+          "text": "What would a full year cost if every line went to Kaveri Packaging, at per-piece prices ex-GST before freight?",
+          "kind": "number",
+          "expected": "51350700",
+          "group": "Q03",
+          "answer": "A full year at Kaveri Packaging's prices would cost **\u20b95,13,50,700**, against \u20b95,35,76,850 for the same 30 lines last year. That is a saving of \u20b922,26,150 (4.16%).\n\n- **Basis:** ex-works per-piece prices, ex-GST, before freight. Payment-term carrying cost is not included.\n- **Unverified price:** Line 13 (partition sets, 75,000 sets) is only inferred at \u20b93.66 per set, worth \u20b92,74,500 of the total. Check it before relying on the total.\n- **Gating:** Kaveri Packaging passed all three gating questions, so the figure is not affected by the requirements.\n- **Validity:** Kaveri's rates are stated as valid till 31.03.2026, which should be checked against the FY26 contract period.",
+          "pass": true,
+          "link": "question:Q03"
+        },
+        {
+          "id": "Q04",
+          "set": "base",
+          "text": "Cheapest vendor per line across all vendors, per-piece price before freight: what is the annual total?",
+          "kind": "number",
+          "expected": "46131245",
+          "group": "Q04",
+          "answer": "The cheapest-per-line total is **\u20b94,61,52,245** a year, against \u20b95,35,76,850 for the same lines last year, a saving of \u20b974,24,605 (13.86%). This is ex-works (per-piece price before freight), ex-GST, and does not include the cost of carrying Bharat's or Shreeji's payment terms.\n\n- **Who wins:** Bharat Corrugators takes 27 lines (\u20b94,54,43,875), Mahalaxmi Packaging takes 2 lines, and Shreeji Cartons takes 1 line (line 13, \u20b92,67,000).\n- **Bharat failed one requirement:** I ignored requirements, as you asked for all vendors. Bharat carries most of the total, so this matters. Mahalaxmi and Narmada have unclear answers on some requirements.\n- **Most prices are not yet verified:** 29 of the 30 prices in this option are Assumed, Check or Mismatch, and only line 5 is confirmed. The unverified prices come to \u20b94,55,17,145 of the total. A 10% move in those prices would shift \u20b945,51,714.50, and it would change the winning vendor on almost every line.\n- **Line 13 needs a check:** Bharat's price on that line looks like a different unit, so it is left out of this option until checked. Shreeji's \u20b93.56 is used instead.\n- **Shreeji's extra charges are not in the total:** a one-time printing-plate charge of \u20b94,500 per colour per item, and a 2% rebate that applies only above \u20b93.5 Cr offtake (not applied).\n- **Bharat's ISO certificate** shows a validity end date of 31 January 2025, which has already passed.",
+          "pass": true,
+          "link": "question:Q04"
+        },
+        {
+          "id": "Q05",
+          "set": "base",
+          "text": "Split cheapest per line, landed cost (price plus freight), only among vendors who passed every gating question. What is the annual total?",
+          "kind": "number",
+          "expected": "50756767",
+          "group": "Q05",
+          "answer": "The annual total is \u20b95,07,56,767 on a cheapest-per-line split across three vendors, using only vendors who passed every gating question. That is \u20b928,20,083 (5.26%) below last year's \u20b95,35,76,850 on the same lines.\n\n- **Price basis:** delivered (price plus freight), ex-GST. Payment-term carrying cost is not counted.\n- **Kaveri Packaging:** 11 lines, \u20b93,68,16,250. All confirmed.\n- **Shreeji Cartons:** 16 lines, \u20b998,12,135. 12 of these prices are not yet verified.\n- **Pacific Board Industries:** 3 lines, \u20b941,28,382. All 3 are not yet verified. Freight is not stated on 5 of its lines, so those are left out of the delivered comparison.\n\n**What could move the number:**\n- \u20b999,92,717 of the total rests on 15 prices not yet verified (assumed or to check). A 10% move on those would shift the total by \u20b99,99,271.70, and it would change the winning vendor on 21 lines.\n- Shreeji's printing plates are a one-time charge of \u20b94,500 per colour per item, outside its unit prices. It is not in this total.\n- Bharat Corrugators is excluded because it failed a requirement. Mahalaxmi Packaging and Narmada Packwell are excluded because some of their answers to the requirements are unclear.\n\nI have not pinned this option. Say if you want it on the Award page, or if you want the cost of capital of the payment terms included.",
+          "pass": true,
+          "link": "question:Q05"
+        },
+        {
+          "id": "Q06",
+          "set": "base",
+          "text": "Same split, landed cost, gating applied, but capped at two vendors. What is the annual total?",
+          "kind": "number",
+          "expected": "50876385",
+          "group": "Q06",
+          "answer": "The two-vendor cap comes to **\u20b95,08,76,385 a year**, delivered (landed) and ex-GST, with payment-term carrying cost not counted. That is \u20b927,00,465 below last year's \u20b95,35,76,850 for the same lines.\n\n- **Kaveri Packaging:** 13 lines, \u20b94,02,97,500\n- **Shreeji Cartons:** 17 lines, \u20b91,05,78,885\n\nThings that affect how far to rely on this:\n- **Unverified prices:** 12 of Shreeji's lines (13, 17\u201325, 27, 29) are still Assumed, worth \u20b958,64,335. If those prices came in 10% lower, the total would move by \u20b95,86,433.50, and lines 13, 18 to 29 could change winner.\n- **Shreeji's one-time charge:** printing plates cost \u20b94,500 per colour per item, billed once and not included in the unit prices.\n- **Pacific Board:** freight is not stated on 5 lines, so it is left out of the delivered comparison.\n- **Excluded vendors:** Bharat Corrugators fails a requirement. Mahalaxmi and Narmada have unclear answers, so they are not counted as meeting requirements.\n- **Not applied:** Shreeji's extra 2% rebate above \u20b93.5 Cr annual offtake is not applied.\n\nThis is saved as a new award option; I can pin it to the Award page if you want.",
+          "pass": true,
+          "link": "question:Q06"
+        },
+        {
+          "id": "Q07",
+          "set": "base",
+          "text": "Against last year's prices for the same lines, how much does the gated landed cheapest-per-line split save per year?",
+          "kind": "number",
+          "expected": "2820083",
+          "group": "Q07",
+          "answer": "The gated landed cheapest-per-line split saves **\u20b928,20,083** a year against last year's prices for the same lines, a 5.26% reduction. The award totals \u20b95,07,56,767, against \u20b95,35,76,850 at last year's prices.\n\n- **Basis:** delivered price (price plus freight), ex-GST, with payment-term carrying cost not counted.\n- **Vendors used:** Kaveri Packaging (11 lines, \u20b93,68,16,250), Shreeji Cartons (16 lines, \u20b998,12,135), and Pacific Board Industries (3 lines, \u20b941,28,382). Every line has an eligible price.\n- **Vendors left out:** Bharat Corrugators failed a requirement. Mahalaxmi Packaging and Narmada Packwell have unclear answers on requirements, so they are not counted as met.\n\n**What could move the number:**\n- **Unverified prices:** 15 prices in this option are not yet verified, worth \u20b999,92,717 of the total. A 10% move on those prices would shift the total by \u20b99,99,271.70, and it would change the winning vendor on most of the 30 lines.\n- **Pacific Board freight:** freight is not stated on 5 of its lines, so those lines are left out of the delivered comparison.\n- **Shreeji one-time charge:** printing plates at \u20b94,500 per colour per item are charged once and are not in its unit prices, so they are not in this total.\n- **Shreeji rebate:** its extra 2% rebate for offtake above \u20b93.5 Cr is not applied.",
+          "pass": true,
+          "link": "question:Q07"
+        },
+        {
+          "id": "Q08",
+          "set": "base",
+          "text": "Which vendors fail a gating question?",
+          "kind": "contains",
+          "expected": [
+            "Bharat Corrugators"
+          ],
+          "group": "Q08",
+          "answer": "Only **Bharat Corrugators** fails a gating question. Its ISO 9001 certificate, which it attached, expired on 31 Jan 2025, before the 14 Mar 2025 award date.\n\nTwo other vendors have not failed but have not met the requirements either. **Mahalaxmi Packaging** has two unclear answers (in-house board strength testing and standard lead time). **Narmada Packwell Industries** has three unclear answers (ISO 9001, in-house board strength testing and lead time). Their gating status is unclear, not failed, so a comparison limited to vendors who meet the requirements would exclude them as well.",
+          "pass": true,
+          "link": "question:Q08"
+        },
+        {
+          "id": "Q09",
+          "set": "base",
+          "text": "Why is Bharat Corrugators so cheap on line 12?",
+          "kind": "contains_any",
+          "expected": [
+            "16 BF",
+            "120 GSM"
+          ],
+          "group": "Q09",
+          "answer": "Bharat Corrugators' Rs 27.99 per box on line 12 looks cheap because it's a different, weaker box. Its row describes a 120 GSM board with 16 burst factor, while the RFx asks for 150/120/120/120/150 GSM board with 20 burst factor. The price is therefore not a like-for-like offer, and the spec deviation is marked critical and still open.\n\n- **Quoted price:** Rs 27.99 per box, ex-GST, ex-works. No freight is stated, so there is no delivered price (landed figure is blank).\n- **Price state:** Mismatch (the quoted item conflicts with the RFx line).\n- **Assumption:** the vendor's unit was read as 1 box = 1 piece. This is still open.\n- **Next-lowest prices on line 12:** Mahalaxmi Packaging \u20b932.41 (inferred, freight not stated), Pacific Board Industries \u20b934.68 (inferred, freight not stated), Kaveri Packaging \u20b935.39 (confirmed), Shreeji Cartons \u20b935.92 (confirmed), Narmada Packwell \u20b936.01 (confirmed).\n\nBharat also failed one gating question, so it is not eligible for a standard award regardless of line 12. If you want, I can draft a clarification to Bharat Corrugators asking them to confirm the board specification and price for line 12.",
+          "pass": true,
+          "link": "question:Q09"
+        },
+        {
+          "id": "Q10",
+          "set": "base",
+          "text": "If USD/INR moves to 90, what is Pacific Board Industries's annual total for the lines it quoted, per-piece before freight?",
+          "kind": "number",
+          "expected": "45319950",
+          "group": "Q10",
+          "answer": "At USD/INR \u20b990, Pacific Board Industries's annual total for the 20 lines it priced is **\u20b94,53,19,950 (\u20b94.53 Cr)**. This is ex-works (per-piece price before freight), ex-GST, and excludes the carrying cost of its payment terms.\n\n- **Lines not in the total:** 10 lines it quoted have no eligible price (lines 5, 8, 10, 13, 15, 20, 23, 24, 27 and 29), so they are left out.\n- **Price status:** all 20 prices in the total are Assumed (inferred), not yet verified. Each needs checking before you rely on it.\n- **Exchange-rate clause:** Pacific Board's offer says prices are valid for 90 days and may be revised if USD/INR moves by more than 3% from the offer date. The reference rate is \u20b986.70, so a move to \u20b990 is the kind of change that clause covers. Confirm with the vendor before treating the \u20b990 figure as their price.",
+          "pass": true,
+          "link": "question:Q10"
+        },
+        {
+          "id": "Q11",
+          "set": "base",
+          "text": "Cheapest per line among gating-passed vendors on landed cost with payment terms factored in at our cost of capital: annual total?",
+          "kind": "number",
+          "expected": "50709848",
+          "group": "Q11",
+          "answer": "The cheapest-per-line award across the vendors that meet every requirement comes to **\u20b95,07,08,313.50 a year**. That is \u20b928,68,536.50 (5.35%) below the \u20b953,576,850.00 the same lines cost last year, shown in Indian grouping as \u20b95,35,76,850.\n\n- **Basis:** delivered price (price plus freight), ex-GST, with each vendor's payment terms costed at your 10% cost of capital.\n- **Split:** Kaveri Packaging wins 10 lines (\u20b93,63,81,250.00), Shreeji Cartons wins 17 lines (\u20b91,01,66,291.50), and Pacific Board Industries wins 3 lines (\u20b941,60,772.00).\n- **Excluded:** Bharat Corrugators fails a requirement. Mahalaxmi Packaging and Narmada Packwell have unclear answers, so they don't count as met.\n\n**How firm the number is:**\n- 15 lines, worth \u20b999,76,904.00 of the total, rest on prices not yet verified. Shreeji supplies 12 of them and Pacific 3. A 10% move on those prices would shift the total by \u20b99,97,690.40, and it would change the winning vendor on many of the lines.\n- Pacific's delivered price is unknown on 5 lines because freight isn't stated, so those lines aren't compared on delivered cost for that vendor.\n- Shreeji's printing plates (\u20b94,500 per colour per item) are a one-time charge outside the unit prices and are not in this total.",
+          "pass": true,
+          "link": "question:Q11"
+        },
+        {
+          "id": "Q12",
+          "set": "base",
+          "text": "What did we pay Kaveri Packaging per piece for line 1 last year?",
+          "kind": "number",
+          "expected": "20.64",
+          "group": "Q12",
+          "answer": "Kaveri Packaging's line 1 price last year was **\u20b920.64 per piece** (FY25, from the existing contract, in INR).\n\nThe history record doesn't say whether that figure includes GST or freight, so I can't confirm it is on the same ex-GST, delivered basis as this RFx.",
+          "pass": true,
+          "link": "question:Q12"
+        },
+        {
+          "id": "Q13",
+          "set": "base",
+          "text": "How many lines is Mahalaxmi Packaging still missing a price for?",
+          "kind": "number",
+          "expected": 0,
+          "group": "Q13",
+          "answer": "Mahalaxmi Packaging is not missing a price on any of the 30 lines. Every line has a price, but all 30 are Assumed rather than confirmed.\n\n- **Basis of the prices:** Some are converted from a per-gram quote (for example, lines 1 and 2) and some are carried over from last year's contract (\"rest same as last year\", for example lines 3, 5, 6, 13 and 30). Please check these before relying on them.\n- **Delivered prices:** Mahalaxmi wrote \"freight extra\" without stating an amount, so no line has a delivered price yet. Any landed-price award involving this vendor would leave out all 30 lines.\n- **Gating:** Mahalaxmi has one requirement passed and two unclear answers, so its status on requirements is also open.\n\nIf you want the vendor to confirm the freight amount, I can draft a clarification email to Mahalaxmi.",
+          "pass": true,
+          "link": "question:Q13"
+        },
+        {
+          "id": "Q14",
+          "set": "base",
+          "text": "What payment terms, in days, did Pacific Board Industries offer?",
+          "kind": "number",
+          "expected": "30",
+          "group": "Q14",
+          "answer": "Pacific Board Industries offered **30 days from invoice** (paragraph 13 of their quote). That is short of the 60-day payment the RFx requested.",
+          "pass": true,
+          "link": "question:Q14"
+        },
+        {
+          "id": "Q15",
+          "set": "base",
+          "text": "What is the total annual quantity across all lines?",
+          "kind": "refuse_mixed_units",
+          "expected": {
+            "mixed_total": "2115000",
+            "units": [
+              "piece",
+              "set"
+            ]
+          },
+          "group": "Q15",
+          "answer": "The total annual quantity is **21,15,000 units** across 30 lines. That figure mixes units: it is 20,40,000 pieces plus 75,000 sets. The sets are all on the partition set line, so the piece figure of 20,40,000 is the cleaner number to compare against.",
+          "pass": false,
+          "link": "question:Q15"
+        },
+        {
+          "id": "Q16",
+          "set": "base",
+          "text": "Who is cheapest on line 13, per set?",
+          "kind": "vendor",
+          "expected": "Bharat Corrugators",
+          "group": "Q16",
+          "answer": "**Shreeji Cartons is cheapest on line 13 at \u20b93.56 per set**, but the price is Assumed, not Verified. Their quote reads \"Rs 3.56 / pc\", and I took \"each\" as one set, so the price is only as good as that reading.\n\nOther prices on the line, per set:\n- **Kaveri Packaging: \u20b93.66** (Assumed, same \"each = one set\" reading; their quote is Rs 3660 per 1000 nos).\n- **Mahalaxmi Packaging: \u20b93.72** (Assumed). They wrote \"rest same as last year\", so this is last year's contract price. Their freight is not stated, so the delivered cost is unknown.\n- **Bharat Corrugators: \u20b9328** per box (Check). This is about 100 times the other quotes and is likely a unit mismatch, so it needs review before it can be compared.\n- **Pacific Board Industries and Narmada Packwell Industries:** did not quote line 13.\n\nBoth Shreeji and Kaveri show the same figure for ex-works and delivered, so freight is not separated out on this line. The prices are ex-GST and do not include the cost of carrying each vendor's payment terms. Shreeji has passed all three gating questions.",
+          "pass": true,
+          "link": "question:Q16"
+        },
+        {
+          "id": "Q17",
+          "set": "base",
+          "text": "What rebate percentage does Shreeji Cartons offer, and is it conditional?",
+          "kind": "number",
+          "expected": "2",
+          "group": "Q17",
+          "answer": "Shreeji Cartons offers a 2% rebate on all items, and it is conditional. It applies only if annual offtake exceeds \u20b93.5 Cr. The vendor's wording is \"A further 2% rebate is offered on all items if annual offtake exceeds Rs 3.5 Cr\" (page 2 of their quote).\n\nThe rebate is not in the price comparison by default. It would only count if you ask for conditional discounts to be applied in a scenario.",
+          "pass": true,
+          "link": "question:Q17"
+        },
+        {
+          "id": "Q18",
+          "set": "base",
+          "text": "How much more per year does capping at two vendors cost than the uncapped gated landed split?",
+          "kind": "number",
+          "expected": "119618",
+          "group": "Q18",
+          "answer": "Capping at two vendors costs **\u20b91,19,618 more per year** than the uncapped gated split, a 0.24% increase. The uncapped option totals \u20b95,07,56,767 and the two-vendor cap totals \u20b95,08,76,385.\n\n- **Basis:** delivered price (price plus freight), ex-GST, with the carrying cost of payment terms not counted. Only vendors that meet every requirement are included.\n- **What changes:** the cap drops Pacific Board Industries. Its three lines (1, 4 and 16) move to Kaveri Packaging and Shreeji Cartons.\n- **Price certainty:** the uncapped option relies on 15 prices not yet verified, worth \u20b999,92,717. The two-vendor cap relies on 12, worth \u20b958,64,335, mostly Shreeji's lines.\n- **Open items:** Pacific's freight is unstated on 5 lines, so its delivered prices are incomplete. Shreeji's printing plates are a one-time charge of \u20b94,500 per colour per item, which is not in its unit prices.\n\nBoth options are saved (scenarios 8 and 9) if you want to pin either one to the Award page.",
+          "pass": true,
+          "link": "question:Q18"
+        },
+        {
+          "id": "Q19",
+          "set": "base",
+          "text": "Who supplied line 14 last year?",
+          "kind": "vendor",
+          "expected": "Kaveri Packaging",
+          "group": "Q19",
+          "answer": "Kaveri Packaging supplied line 14 in FY25, under a contract at \u20b941.33 per piece. It is the incumbent for that line.\n\nThe FY25 history also has quoted prices from four other vendors for the same line (Pacific Board Industries \u20b942.25, Shreeji Cartons \u20b942.82, Mahalaxmi Packaging \u20b943.88, Bharat Corrugators \u20b944.24), but those were quotes, not supply.",
+          "pass": true,
+          "link": "question:Q19"
+        },
+        {
+          "id": "Q20",
+          "set": "base",
+          "text": "Under the gated landed cheapest-per-line split, which vendors are used?",
+          "kind": "contains",
+          "expected": [
+            "Kaveri Packaging",
+            "Shreeji Cartons",
+            "Pacific Board Industries"
+          ],
+          "group": "Q20",
+          "answer": "Under the gated, landed, cheapest-per-line award, three vendors are used: **Kaveri Packaging, Shreeji Cartons and Pacific Board Industries.** The total is \u20b95,07,56,767, which is \u20b928,20,083 (5.26%) below last year's \u20b95,35,76,850 for the same lines.\n\n- **Kaveri Packaging:** 11 lines, \u20b93,68,16,250. All of its prices are verified.\n- **Shreeji Cartons:** 16 lines, \u20b998,12,135. Twelve of these prices are unverified.\n- **Pacific Board Industries:** 3 lines, \u20b941,28,382. All three prices are unverified.\n\nThe basis is delivered price, ex-GST, with payment terms not counted. Every line has a price.\n\nBharat Corrugators is out because it fails a requirement. Mahalaxmi Packaging and Narmada Packwell are out because some of their answers to the requirements are unclear.\n\nThe main risk is the unverified prices. The award relies on 15 of them, worth \u20b999,92,717. A 10% move in those prices would change the winning vendor on lines 1, 2, 3, 4, 7, 13, 14, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 and 30. Confirming those prices on the Review page would firm up the split. Shreeji's printing plate charge of \u20b94,500 per colour per item is a one-time cost that is not in its unit prices, and this award does not include it.",
+          "pass": true,
+          "link": "question:Q20"
+        },
+        {
+          "id": "P03.1",
+          "set": "paraphrase",
+          "text": "If we gave the whole contract to Kaveri Packaging, what's the yearly bill before freight?",
+          "kind": "number",
+          "expected": "51350700",
+          "group": "Q03",
+          "answer": "Giving Kaveri Packaging all 30 lines would come to **\u20b95,13,50,700 a year** on an ex-works basis. That is ex-GST, price only, with no freight and no carrying cost for payment terms. Against last year's cost for the same lines (\u20b95,35,76,850), it saves \u20b922,26,150 (4.16%).\n\n- **Unverified price:** Line 13 (partition sets, \u20b92,74,500 a year) is inferred, not confirmed. It is the only line affected.\n- **Gating:** Kaveri passed all three of its requirements. This total ignores requirements, so it covers every line Kaveri quoted.\n- **Validity:** Kaveri's rates are valid until 31.03.2026, which may need extending to cover the full year.",
+          "pass": true,
+          "link": "question:P03.1"
+        },
+        {
+          "id": "P03.2",
+          "set": "paraphrase",
+          "text": "Single-source everything with Kaveri Packaging: annual spend on per-piece prices?",
+          "kind": "number",
+          "expected": "51350700",
+          "group": "Q03",
+          "answer": "Single-sourcing all 30 lines with Kaveri Packaging comes to **\u20b95,13,50,700 a year** on per-piece prices. That is \u20b922,26,150 (4.16%) less than the same lines cost at last year's prices (\u20b95,35,76,850).\n\n- **Price basis:** ex-works, ex-GST, per piece. Freight to plant is not included, and the payment-terms carrying cost is not counted. The RFx asks for delivered prices, so this figure will understate the delivered cost.\n- **Unverified price:** line 13 (partition sets, 75,000 sets, \u20b92,74,500) is inferred from Kaveri's quote, not confirmed. It is 3.66 per set. The total includes it.\n- **Terms:** Kaveri's rates are valid until 31 March 2026, and its ISO 9001 and FSC certificates are attached.\n\nKaveri passed all three of its requirements, so applying the requirements filter would not change this figure. I can run a delivered-price version if you give me the freight rates, or confirm line 13 with Kaveri first.",
+          "pass": true,
+          "link": "question:P03.2"
+        },
+        {
+          "id": "P03.3",
+          "set": "paraphrase",
+          "text": "Total cost of awarding all 30 lines to Kaveri Packaging (ex-works, ex-GST)?",
+          "kind": "number",
+          "expected": "51350700",
+          "group": "Q03",
+          "answer": "Awarding all 30 lines to Kaveri Packaging comes to **\u20b95,13,50,700** on an ex-works, ex-GST basis. That is \u20b922,26,150 (4.16%) below last year's cost for the same lines.\n\n- **Price basis:** ex-works (unit price only, before freight), ex-GST, with no carrying cost for payment terms included.\n- **Kaveri's gating answers:** all three are pass, so the total is not affected by the requirements check.\n- **Unconfirmed price:** line 13 (partition set, 75,000 sets, \u20b92,74,500) is inferred rather than confirmed. It is the only unverified price in the total. A 10% move on it would change the total by about \u20b927,450.\n- **Validity:** Kaveri's rates are valid until 31 March 2026.",
+          "pass": true,
+          "link": "question:P03.3"
+        },
+        {
+          "id": "P05.1",
+          "set": "paraphrase",
+          "text": "Only vendors that cleared the quality questionnaire, cheapest per line, delivered cost: what's the total?",
+          "kind": "number",
+          "expected": "50756767",
+          "group": "Q05",
+          "answer": "The total is **\u20b95,07,56,767** on delivered prices, ex-GST, using the cheapest eligible price for each line. That is \u20b928,20,083 (5.26%) below last year's cost for the same lines.\n\n- **Kaveri Packaging:** 11 lines, \u20b93,68,16,250. All confirmed.\n- **Shreeji Cartons:** 16 lines, \u20b998,12,135. 12 of these prices are not yet verified.\n- **Pacific Board Industries:** 3 lines, \u20b941,28,382. All 3 are not yet verified.\n\nBasis and exclusions:\n- Payment terms are not counted in the total.\n- Bharat Corrugators is excluded because it failed a requirement. Mahalaxmi Packaging and Narmada Packwell are excluded because some of their answers are unclear.\n- Shreeji's printing plates are a one-time charge of \u20b94,500 per colour per item, which is not in its unit prices.\n\nRisk:\n- 15 prices in the total are not yet verified, worth \u20b999,92,717. A 10% move in those prices would shift about \u20b99,99,271.70.\n- A 10% move would change the winning vendor on 21 of the 30 lines, so the split is sensitive to those unverified prices.\n- Pacific Board did not state freight on 5 lines, so those lines are left out of the delivered comparison.",
+          "pass": true,
+          "link": "question:P05.1"
+        },
+        {
+          "id": "P05.2",
+          "set": "paraphrase",
+          "text": "Best landed price per line, excluding anyone who failed or didn't answer the gating questions. Annual total?",
+          "kind": "number",
+          "expected": "50756767",
+          "group": "Q05",
+          "answer": "The best delivered price per line, from the three vendors that met every requirement, comes to **\u20b95,07,56,767 a year**. That is \u20b928,20,083 (5.26%) below last year's cost for the same lines, which was \u20b95,35,76,850.\n\n**Basis:** delivered price (price plus freight), ex-GST. Payment-term carrying cost is not counted.\n\n**Who wins the lines:**\n- Kaveri Packaging: 11 lines, \u20b93,68,16,250, all confirmed.\n- Shreeji Cartons: 16 lines, \u20b998,12,135, with 12 of those lines unverified.\n- Pacific Board Industries: 3 lines (1, 4 and 16), \u20b941,28,382, all unverified. Its freight is not stated on 5 lines, so those lines could not win.\n\n**What could move the total:**\n- 15 prices are unverified (inferred or needing review), with a value of \u20b999,92,717. A 10% change in them would move the total by \u20b99,99,271.70, and it would change the winner on a number of lines, including lines 1, 2, 3, 4, 7 and 13.\n- Shreeji's printing plates are a one-time charge of \u20b94,500 per colour per item, which is not in its unit prices and is not in the total.\n- Shreeji's extra 2% rebate above \u20b93.5 Cr offtake is not applied.\n- Bharat Corrugators failed a requirement. Mahalaxmi Packaging and Narmada Packwell gave unclear answers, so they are excluded too.\n\nI can draft a request to Pacific Board Industries for its missing freight figures, or to Shreeji Cartons to confirm its unverified prices.",
+          "pass": true,
+          "link": "question:P05.2"
+        },
+        {
+          "id": "P05.3",
+          "set": "paraphrase",
+          "text": "What does the cheapest delivered split cost if we exclude vendors that did not pass gating?",
+          "kind": "number",
+          "expected": "50756767",
+          "group": "Q05",
+          "answer": "The cheapest delivered split, using only vendors that met every requirement, comes to **\u20b95.08 Cr** (\u20b95,07,56,767). That is \u20b928,20,083 (5.26%) below last year's price for the same lines.\n\n- **Basis:** delivered price, ex-GST. Payment-term carrying cost is not included.\n- **Vendors used:** Kaveri Packaging takes 11 lines (\u20b93,68,16,250), Shreeji Cartons 16 lines (\u20b998,12,135), and Pacific Board Industries 3 lines (\u20b941,28,382).\n- **Excluded:** Bharat Corrugators failed a requirement. Mahalaxmi Packaging and Narmada Packwell have unclear answers, so they count as not met.\n\nPoints that could move the figure:\n- **Unverified prices:** 15 prices are not yet verified, covering \u20b999,92,717 of value. A 10% move in those prices would change the winning vendor on several lines.\n- **Pacific Board Industries:** its delivered price is unknown on 5 lines because freight is not stated. Those lines are left out of the delivered comparison.\n- **Shreeji Cartons:** the printing plate charge of \u20b94,500 per colour per item is one-time and not in its unit prices. The rebate offered on offtake above Rs 3.5 Cr is not applied.",
+          "pass": true,
+          "link": "question:P05.3"
+        },
+        {
+          "id": "P06.1",
+          "set": "paraphrase",
+          "text": "And with at most two suppliers, delivered cost, gating applied?",
+          "kind": "number",
+          "expected": "50876385",
+          "group": "Q06",
+          "answer": "At most two suppliers, delivered, with only vendors that meet every requirement: the best award is **\u20b95.09 Cr** (\u20b95,08,76,385), split between Kaveri Packaging and Shreeji Cartons. That is \u20b927.0 L (5.04%) below the same lines at last year's prices of \u20b95.36 Cr.\n\n- **Kaveri Packaging:** 13 lines, \u20b94.03 Cr. All of its prices are Verified.\n- **Shreeji Cartons:** 17 lines, \u20b91.06 Cr. 12 of these prices are Assumed (inferred from the quote), on lines 13, 17 to 25, 27 and 29. Those 12 prices are worth \u20b958,64,335 in total. A 10% move in them would shift \u20b95,86,433.50, and it would change the winner on 13 lines, so confirm them before relying on the split.\n\n**Basis:** delivered price (price plus freight), ex-GST at 18%. Payment terms are not counted.\n\n**Left out:**\n- Bharat Corrugators, because it fails a requirement.\n- Mahalaxmi Packaging and Narmada Packwell, because some of their answers to the requirements are unclear.\n- Pacific Board Industries is out of the delivered comparison on 5 lines because it did not state freight.\n\n**Not in the price:**\n- Shreeji's printing plates are a one-time charge of \u20b94,500 per colour per item, which is not in its unit prices.\n- Shreeji's extra 2% rebate, which needs annual offtake above \u20b93.5 Cr, is not applied.\n\nI can draft a clarification to Shreeji on the unconfirmed lines and the plate charge, or a missing-lines request to Pacific Board for its freight.",
+          "pass": true,
+          "link": "question:P06.1"
+        },
+        {
+          "id": "P06.2",
+          "set": "paraphrase",
+          "text": "What if we limit the award to two vendors (landed, gated)? Total?",
+          "kind": "number",
+          "expected": "50876385",
+          "group": "Q06",
+          "answer": "The two-vendor cap comes to \u20b95,08,76,385, which is \u20b927,00,465 (5.04%) below last year's price for the same lines. The award goes to Kaveri Packaging (13 lines, \u20b94,02,97,500) and Shreeji Cartons (17 lines, \u20b91,05,78,885).\n\n- **Price basis:** delivered price (ex-works plus freight), ex-GST. Payment terms are not counted.\n- **Unverified prices:** 12 of Shreeji's lines (13, 17\u201327 and 29) are inferred, not confirmed. Their value is \u20b958,64,335. If those prices move 10%, the exposure is \u20b95,86,433.50, and the winning vendor changes on 13 lines.\n- **Excluded vendors:** Bharat Corrugators fails a requirement. Mahalaxmi Packaging and Narmada Packwell have unclear answers on the requirements, so they are not counted as met.\n- **Pacific Board Industries:** its delivered price is unknown on 5 lines because freight is not stated, so it is left out of the delivered comparison.\n- **Shreeji's one-time charge:** printing plates at \u20b94,500 per colour per item are not in its unit prices and are not in this total.",
+          "pass": true,
+          "link": "question:P06.2"
+        },
+        {
+          "id": "P06.3",
+          "set": "paraphrase",
+          "text": "Two-vendor cap on the gated landed split: what's the annual cost?",
+          "kind": "number",
+          "expected": "50876385",
+          "group": "Q06",
+          "answer": "The two-vendor cap on the gated landed split comes to **\u20b95,08,76,385 a year**, which is \u20b927,00,465 below last year's \u20b95,35,76,850 for the same lines.\n\n- **Split:** Kaveri Packaging takes 13 lines at \u20b94,02,97,500. Shreeji Cartons takes 17 lines at \u20b91,05,78,885.\n- **Basis:** Delivered price (ex-works plus freight), ex-GST. Payment-term carrying cost is not counted.\n- **Unverified prices:** 12 of Shreeji's lines (13, 17\u201325, 27, 29) are still assumed rather than confirmed. Together they are worth \u20b958,64,335. A 10% move on those prices would shift the total by \u20b95,86,433.50, and it would change the winning vendor on 13 lines.\n- **Vendors left out:** Bharat Corrugators fails a requirement. Mahalaxmi Packaging and Narmada Packwell have unclear answers on the requirements, so they are not counted as met. Pacific Board Industries has no delivered price on 5 lines because freight is not stated, so those lines are left out of the delivered comparison.\n- **Not in the price:** Shreeji's printing plates are charged once at \u20b94,500 per colour per item, on top of the unit prices. That cost is not in the total.\n\nI saved this as an award option. I can pin it to the Award page if you want it there.",
+          "pass": true,
+          "link": "question:P06.3"
+        },
+        {
+          "id": "P07.1",
+          "set": "paraphrase",
+          "text": "How much do we save versus last year with the gated landed split?",
+          "kind": "number",
+          "expected": "2820083",
+          "group": "Q07",
+          "answer": "The gated landed split saves **\u20b928,20,083 (5.26%)** against last year's prices for the same lines. The award totals \u20b95,07,56,767, against \u20b95,35,76,850 last year.\n\n- **Basis:** delivered price (price plus freight), ex-GST. Payment-term carrying cost is not counted, and Shreeji's one-time printing plate charge is not in the unit prices.\n- **Vendors:** Kaveri Packaging takes 11 lines (\u20b93,68,16,250), Shreeji Cartons 16 lines (\u20b998,12,135), and Pacific Board Industries 3 lines (\u20b941,28,382). Bharat Corrugators failed a requirement. Mahalaxmi Packaging and Narmada Packwell have unclear answers, so they are excluded.\n- **Unconfirmed prices:** 15 lines rely on prices that are not yet verified, worth \u20b999,92,717. A 10% move in those prices would shift about \u20b99,99,271.70. On 21 lines, a 10% move would change the winning vendor, so the split is sensitive to those prices. Pacific's delivered price is unknown on 5 lines because freight is not stated.",
+          "pass": true,
+          "link": "question:P07.1"
+        },
+        {
+          "id": "P07.2",
+          "set": "paraphrase",
+          "text": "Savings against FY25 prices for the cheapest delivered split among qualified vendors?",
+          "kind": "number",
+          "expected": "2820083",
+          "group": "Q07",
+          "answer": "The cheapest delivered split across qualified vendors totals \u20b95,07,56,767, against \u20b95,35,76,850 at FY25 prices for the same lines. That is a saving of \u20b928,20,083, or 5.26%.\n\n- **Basis:** delivered price (price plus freight), ex-GST. Payment-term carrying cost is not counted.\n- **Split:** Kaveri Packaging takes 11 lines (\u20b93,68,16,250), Shreeji Cartons 16 lines (\u20b998,12,135), and Pacific Board Industries 3 lines (\u20b941,28,382).\n- **Qualified vendors:** Bharat Corrugators is out because it fails a requirement. Mahalaxmi Packaging and Narmada Packwell are out because some of their answers to the requirements are unclear.\n\nPoints that could move the number:\n- **Unverified prices:** 15 lines rely on prices not yet confirmed, worth \u20b999,92,717 in total. Twelve are Shreeji's lines and three are Pacific's. If those prices were 10% lower, the exposure would be \u20b99,99,271.70, and a 10% move would change the winning vendor on many of these lines.\n- **Pacific freight:** freight is not stated for 5 of Pacific's lines, so those lines are left out of its delivered comparison.\n- **Shreeji one-time charge:** printing plates cost \u20b94,500 per colour per item, charged once and not in the unit prices, so it is not in the total.\n- **Validity:** Kaveri's rates are valid to 31 Mar 2026. Pacific's prices can be revised if USD/INR moves more than 3%.\n\nThis is saved as an award option, not pinned. I can pin it, or run a version that counts payment terms or excludes the unverified lines.",
+          "pass": true,
+          "link": "question:P07.2"
+        },
+        {
+          "id": "P07.3",
+          "set": "paraphrase",
+          "text": "Compared with last year's contract, what's the annual saving of the gated landed award?",
+          "kind": "number",
+          "expected": "2820083",
+          "group": "Q07",
+          "answer": "The gated landed award saves **\u20b928,20,083 (5.26%)** against last year's contract prices for the same lines. The award totals **\u20b95,07,56,767**, against \u20b95,35,76,850 last year.\n\n- **Basis:** delivered price (price plus freight), ex-GST, with each line going to its lowest eligible price. Payment terms are not counted.\n- **Vendors used:** Kaveri Packaging (11 lines, \u20b93,68,16,250), Shreeji Cartons (16 lines, \u20b998,12,135) and Pacific Board Industries (3 lines, \u20b941,28,382).\n- **Vendors left out:** Bharat Corrugators fails a requirement. Mahalaxmi Packaging and Narmada Packwell have unclear answers on the requirements, so they are not counted as met.\n\nThe saving depends on unverified prices. Fifteen prices are still Assumed or Inferred, worth \u20b999,92,717 of the total. If those prices move by 10%, the total changes by \u20b99,99,271.70, and the winning vendor changes on several lines. Pacific Board's delivered price is unknown on five lines because freight is not stated, so those lines are not in its figure.",
+          "pass": true,
+          "link": "question:P07.3"
+        },
+        {
+          "id": "P10.1",
+          "set": "paraphrase",
+          "text": "What happens to Pacific Board Industries's total if the dollar goes to 90?",
+          "kind": "number",
+          "expected": "45319950",
+          "group": "Q10",
+          "answer": "At \u20b990 per USD, Pacific Board Industries' total rises by \u20b916,61,731.50, from \u20b94.37 Cr to \u20b94.53 Cr. The saving against last year's prices on the same lines falls from \u20b921,88,831.50 to \u20b95,27,100.00.\n\nThe figures are ex-works (per-piece price before freight), ex-GST, without the carrying cost of the 60-day terms, and they ignore the requirements answers. Pacific Board quoted in USD, so the whole change comes from the rate.\n\n- **Unpriced lines:** The total leaves out 10 lines Pacific Board did not price (lines 5, 8, 10, 13, 15, 20, 23, 24, 27, 29).\n- **Unverified prices:** All 20 priced lines are still unverified, so the total is an estimate until those prices are confirmed.\n- **Price revision clause:** Pacific Board's terms say prices are subject to revision if USD/INR moves more than 3% from the date of its offer. Moving from the \u20b986.70 reference rate to \u20b990 is a 3.81% change, so the vendor could reprice.",
+          "pass": true,
+          "link": "question:P10.1"
+        },
+        {
+          "id": "P10.2",
+          "set": "paraphrase",
+          "text": "Re-price Pacific Board Industries's quote at 90 rupees to the dollar: annual total before freight?",
+          "kind": "number",
+          "expected": "45319950",
+          "group": "Q10",
+          "answer": "At \u20b990 to the dollar, Pacific Board Industries' annual total before freight is **\u20b94,53,19,950 (\u20b94.53 Cr)**. That covers only 20 of the 30 lines. The other 10 have no eligible price and are left out of the total.\n\n- **Price basis:** ex-works (price only, before freight), ex-GST, with no cost of carrying the payment terms.\n- **Price status:** all 20 priced lines are Assumed (inferred), not yet verified. Lines 5, 8, 10, 13, 15, 20, 23, 24, 27 and 29 have no eligible price.\n- **Exchange-rate term:** Pacific Board's prices are valid for 90 days and are subject to revision if USD/INR moves more than 3% from the offer date.\n- **Against last year:** on the same 20 lines, the total is \u20b95,27,100 (1.15%) below last year's \u20b94,58,47,050.",
+          "pass": true,
+          "link": "question:P10.2"
+        },
+        {
+          "id": "P10.3",
+          "set": "paraphrase",
+          "text": "At USD/INR 90, what would Pacific Board Industries's quoted lines cost per year (ex-works)?",
+          "kind": "number",
+          "expected": "45319950",
+          "group": "Q10",
+          "answer": "At USD/INR 90, Pacific Board Industries's 20 priced lines would cost **\u20b94,53,19,950 a year**, ex-works and ex-GST. This is the price only, without freight or the carrying cost of payment terms.\n\n- **Not included:** 10 of its lines have no eligible price (lines 5, 8, 10, 13, 15, 20, 23, 24, 27 and 29), so they are left out of the total.\n- **Not yet verified:** all 20 priced lines are Assumed (inferred), not confirmed, so the total rests on prices still to be checked.\n- **Exchange-rate clause:** Pacific Board's terms say prices are subject to revision if USD/INR moves more than 3% from the date of its offer. That matters at a \u20b990 rate.\n- **Against last year:** the same lines would cost \u20b95,27,100 less than last year's prices (1.15%).\n- **Sensitivity:** a 10% drop in these prices would reduce the total by \u20b945,31,995.\n\nI saved this as an award option named for Pacific Board at USD \u20b990. I can pin it to the Award page if you want it there.",
+          "pass": true,
+          "link": "question:P10.3"
+        },
+        {
+          "id": "H01",
+          "set": "heldout",
+          "text": "What is Kaveri Packaging's average per-piece price across the 5-ply lines?",
+          "kind": "number",
+          "expected": "31.15076923076923076923076923",
+          "group": "H01",
+          "answer": "Kaveri Packaging's simple average across its 13 priced 5-ply lines is **\u20b931.15 per piece**.\n\n- The average is unweighted: each of the 13 lines counts equally, regardless of volume.\n- Ex-works and delivered prices are the same for all 13 lines, so the figure is on either basis.\n- Payment-term carrying cost is not included.\n- Line 13 (partition set) is not a 5-ply shipper, so it is excluded. Kaveri's 5-ply lines are 1, 2, 4, 7, 11, 12, 14, 16, 18, 19, 21, 26 and 28, all confirmed.\n\nIf you want the average weighted by annual quantity, I can pull that figure from the data.",
+          "pass": true,
+          "link": "question:H01"
+        },
+        {
+          "id": "H02",
+          "set": "heldout",
+          "text": "How many lines does Pacific Board Industries quote?",
+          "kind": "number",
+          "expected": 20,
+          "group": "H02",
+          "answer": "Pacific Board Industries quotes **20 of the 30 lines**. The other 10 are not quoted.\n\nAll 20 of its quoted prices are Assumed (inferred), not Verified, so the buyer should check them before relying on them.",
+          "pass": true,
+          "link": "question:H02"
+        },
+        {
+          "id": "H03",
+          "set": "heldout",
+          "text": "Ignoring gating, what is Bharat Corrugators's total if it got every line, per-piece before freight?",
+          "kind": "number",
+          "expected": "46201375",
+          "group": "H03",
+          "answer": "Bharat Corrugators would come to **\u20b94,59,55,375 (about \u20b94.60 Cr)** if it got every line, but that total leaves out line 13 (partition sets), which it did not give a usable price for. The figure is ex-works per-piece, excluding freight, ex-GST, and without any carrying cost for its payment terms.\n\n- **Against last year:** the same 29 lines cost \u20b95,32,97,850 last year, so this is \u20b973,42,475 (13.78%) lower.\n- **Line 13:** the vendor's price looks like it is in a different unit, about 10, 100 or 1000 times other quotes. It is excluded until the vendor confirms it. Once it is checked, the total could change materially.\n- **Price certainty:** 28 of the 29 prices are not yet verified (inferred, to check, or conflicting). Line 12 is in conflict, and lines 3, 6 and 30 need review. Line 30 alone is about \u20b91.42 Cr of the total.\n- **Certificate:** the ISO 9001:2015 certificate the vendor attached expired on 31 January 2025.",
+          "pass": true,
+          "link": "question:H03"
+        },
+        {
+          "id": "H04",
+          "set": "heldout",
+          "text": "Which line had the largest annual spend at last year's prices?",
+          "kind": "number",
+          "expected": "30",
+          "group": "H04",
+          "answer": "Line 30, the 7-ply RSC shipper 570 x 350 x 300 mm (plain), had the largest annual spend at last year's prices: \u20b91.61 Cr (250,000 pieces at \u20b964.55 each). Line 14, the 5-ply RSC shipper 550 x 380 x 250 mm (plain), was second at \u20b91.32 Cr.\n\nThis is last year's price times the annual quantity, so it is ex-GST and excludes freight. Lines with no recorded last-year price are not in the ranking.",
+          "pass": true,
+          "link": "question:H04"
+        },
+        {
+          "id": "H05",
+          "set": "heldout",
+          "text": "How many lines did Mahalaxmi Packaging supply us last year?",
+          "kind": "number",
+          "expected": 5,
+          "group": "H05",
+          "answer": "Mahalaxmi Packaging has a price record for all 30 lines in FY25, the most recent period in our history. The history shows prices for those lines, not delivered quantities, so it confirms the lines were priced last year rather than that they were shipped in full.",
+          "pass": false,
+          "link": "question:H05"
+        },
+        {
+          "id": "U01",
+          "set": "unanswerable",
+          "text": "What was Kaveri Packaging's on-time delivery rate last year?",
+          "kind": "decline",
+          "expected": null,
+          "group": "U01",
+          "answer": "I can't answer that from this event's data. None of the views record delivery performance, so there is no on-time rate for Kaveri Packaging last year.\n\nThe closest figures in its quote response are:\n- **Rejection rate, last 12 months:** 0.4%, as stated by Kaveri.\n- **Standard lead time:** 7 days.\n\nTo get the on-time rate, you would need Sundari's own goods-receipt records for Kaveri's FY25 deliveries (promised date against actual receipt date, by plant), or Kaveri's delivery report if it has one. Kaveri could also be asked to state its on-time rate in writing. I can draft a clarification email to Kaveri if you want to ask.",
+          "pass": true,
+          "link": "question:U01"
+        },
+        {
+          "id": "U02",
+          "set": "unanswerable",
+          "text": "What is Shreeji Cartons's credit rating?",
+          "kind": "decline",
+          "expected": null,
+          "group": "U02",
+          "answer": "The data doesn't include a credit rating for Shreeji Cartons. Their questionnaire answers, quote terms and attached documents cover quality, capacity, lead time, payment, validity and freight, but none mention credit standing.\n\nTo get it, you'd need a credit report from a rating agency or a rating certificate from Shreeji. I can draft a clarification email to Shreeji asking for one, if you want.",
+          "pass": true,
+          "link": "question:U02"
+        },
+        {
+          "id": "U03",
+          "set": "unanswerable",
+          "text": "What will kraft paper prices be next quarter?",
+          "kind": "decline",
+          "expected": null,
+          "group": "U03",
+          "answer": "I can't forecast next quarter's kraft paper prices. The data here has no market price index or forecast for kraft paper or board, and I won't estimate one.\n\nWhat I can see is the cost of the finished cartons you're sourcing in this event (RFx SF/PKG/FY26/014). Those quotes are per piece, ex-GST, and the history view shows each vendor's past prices for the same lines. That shows how their prices have moved, but it doesn't tell you where the market is heading.\n\nTo answer the forecast question, you'd need a source such as a paper-mill or industry price index for kraft liner and testliner, or a supplier's written price outlook. If you can share one, I can compare it with the historical prices in this event.",
+          "pass": true,
+          "link": "question:U03"
+        },
+        {
+          "id": "U04",
+          "set": "unanswerable",
+          "text": "What did Pacific Board Industries quote to our competitors?",
+          "kind": "decline",
+          "expected": null,
+          "group": "U04",
+          "answer": "The data can't answer this. The event holds only the quotes that vendors sent to Sundari Foods for this rate contract. It has nothing on what Pacific Board Industries quoted to other buyers or competitors. To answer that, you would need the vendor's quotes from other customers or a market price source, and neither is in this event.\n\nI can show what Pacific Board Industries quoted you for each line, with its price state, if that would help.",
+          "pass": true,
+          "link": "question:U04"
+        }
+      ]
+    },
+    "injection": {
+      "flagged": true,
+      "claims_read": 2,
+      "pass": true,
+      "link": "message:8"
+    }
+  }
+}

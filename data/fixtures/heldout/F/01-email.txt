@@ -1,0 +1,13 @@
+From: Rakesh Verma <sales@narmadapackwell.example>
+To: purchase@sundarifoods.example
+Date: Mon, 24 Feb 2025 15:03:00 +0530
+Subject: Quotation
+Attachments: Scan_0042.pdf
+
+Dear Sir/Madam,
+
+Please find our price list attached.
+
+Regards,
+Rakesh Verma
+Narmada Packwell Industries

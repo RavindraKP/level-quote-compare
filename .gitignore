@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.env
+data/level.db*
+data/uploads/
+*.pdf.assignment
+evals/results/work/
+evals/results/*-FAKE.*
+data/exports/
+data/demo-snapshot/
+data/.link_secret

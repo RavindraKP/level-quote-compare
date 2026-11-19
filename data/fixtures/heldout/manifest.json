@@ -1,0 +1,15 @@
+{
+  "seed": "A",
+  "messages": [
+    {
+      "vendor": "F",
+      "email": "F/01-email.txt",
+      "attachments": [
+        {
+          "file": "F/Scan_0042.pdf",
+          "kind": "quote"
+        }
+      ]
+    }
+  ]
+}

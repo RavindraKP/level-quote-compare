@@ -1,0 +1,92 @@
+{
+  "seed": "A",
+  "messages": [
+    {
+      "vendor": "A",
+      "email": "A/01-email.txt",
+      "attachments": [
+        {
+          "file": "A/KP-Quotation-SundariFoods.xlsx",
+          "kind": "quote"
+        },
+        {
+          "file": "A/ISO-9001-Certificate.pdf",
+          "kind": "certificate"
+        },
+        {
+          "file": "A/FSC-CoC-Certificate.pdf",
+          "kind": "certificate"
+        },
+        {
+          "file": "A/Board-Test-Report-Jan25.pdf",
+          "kind": "report"
+        }
+      ]
+    },
+    {
+      "vendor": "A",
+      "email": "A/02-email.txt",
+      "attachments": []
+    },
+    {
+      "vendor": "B",
+      "email": "B/01-email.txt",
+      "attachments": [
+        {
+          "file": "B/Shreeji-Quotation-SC-2425-311.pdf",
+          "kind": "quote"
+        },
+        {
+          "file": "B/ISO-9001.pdf",
+          "kind": "certificate"
+        }
+      ]
+    },
+    {
+      "vendor": "C",
+      "email": "C/01-email.txt",
+      "attachments": [
+        {
+          "file": "C/Pacific-Board-Offer-PBI-EXP-0925.docx",
+          "kind": "quote"
+        },
+        {
+          "file": "C/ISO9001-PBI.pdf",
+          "kind": "certificate"
+        },
+        {
+          "file": "C/FSC-CoC-PBI.pdf",
+          "kind": "certificate"
+        }
+      ]
+    },
+    {
+      "vendor": "D",
+      "email": "D/01-email.txt",
+      "attachments": [
+        {
+          "file": "D/IMG_20250222_174512.jpg",
+          "kind": "quote"
+        },
+        {
+          "file": "D/iso certificate.pdf",
+          "kind": "certificate"
+        },
+        {
+          "file": "D/test report.pdf",
+          "kind": "report"
+        }
+      ]
+    },
+    {
+      "vendor": "E",
+      "email": "E/01-email.txt",
+      "attachments": [
+        {
+          "file": "E/ISO cert.pdf",
+          "kind": "certificate"
+        }
+      ]
+    }
+  ]
+}
