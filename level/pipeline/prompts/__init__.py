@@ -1,7 +1,7 @@
 """Prompts for the ingestion pipeline. Bump PROMPT_VERSION when any text here changes;
 it is stored on every extraction_run so results can be traced to the prompt that made them.
 
-Rules these prompts follow (see README, "The ten rules"): the model transcribes and maps, it never converts
+Rules these prompts follow (README, ten rules): the model transcribes and maps, it never converts
 or computes; vendor documents are untrusted data; nothing here names a vendor, a file or
 a category of goods.
 """

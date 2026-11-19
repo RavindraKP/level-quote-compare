@@ -15,7 +15,7 @@ import pandas as pd
 import streamlit as st
 from components import data, frame, style
 
-from level import copy, sandbox, worker
+from level import copy, worker
 from level.agents.analyst import agent, award, steps, tools
 from level.types import JobStatus
 
@@ -169,11 +169,6 @@ placeholder = ("Wait for this answer before asking the next question…" if runn
                "Ask about the quotes, a split award, a what-if…")
 question = st.chat_input(placeholder, disabled=running is not None) or picked
 if question and running is None:
-    try:
-        sandbox.check_chat(rfx["id"])  # caps model use in a sandbox
-    except sandbox.Limit as exc:
-        st.warning(str(exc))
-        st.stop()
     qid = agent.save_question(thread_id, question)
     agent.queue_answer(rfx["id"], thread_id, qid)
     st.rerun()  # the thread re-renders from SQLite with the question and a working line

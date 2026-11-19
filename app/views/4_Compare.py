@@ -25,14 +25,12 @@ if rfx is None:
     st.stop()
 
 # --- Sidebar: assumptions (T7). Editing one recomputes every price. -----------------------
+if note := st.session_state.pop("assumption_toast", None):
+    st.toast(note)  # set before the rerun that refreshes the prices
 with st.sidebar:
     st.subheader("Assumptions")
     st.caption("Used in every conversion. Changing one updates every price.")
     PERCENT = {"gst_rate", "cost_of_capital"}  # stored as a share, shown as a percentage (M5)
-    shared = bool(rfx.get("is_sandbox"))  # shared with every event: read-only in a sandbox
-    if shared:
-        st.caption("These are shared with the demo event, so they cannot be changed from the "
-                   "sandbox. Ask the analyst for an award option with a different rate instead.")
     for a in data.assumptions():
         label = copy.assumption_label(a["key"])
         is_pct = a["key"] in PERCENT
@@ -48,12 +46,14 @@ with st.sidebar:
             except ValueError:
                 when = None
             as_of = st.date_input("As of", when, format="DD/MM/YYYY", key=f"asof_{a['key']}")
-            if st.form_submit_button("Save and update prices", disabled=shared):
+            if st.form_submit_button("Save and update prices"):
                 try:
                     stored = str(Decimal(value) / 100) if is_pct else value
                     data.set_assumption(a["key"], stored, source,
                                         as_of.isoformat() if as_of else None, rfx["id"])
-                    st.toast(f"{label} updated; every price recalculated")
+                    st.session_state["assumption_toast"] = (f"{label} updated; every price "
+                                                            "recalculated")
+                    st.rerun()
                 except (ValueError, InvalidOperation):
                     st.error(f"{label}: enter a number, for example "
                              f"{'18' if is_pct else '86.50'}.")

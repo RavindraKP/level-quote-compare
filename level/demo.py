@@ -64,10 +64,6 @@ def _copy_db(src: Path, dst: Path) -> None:
 def save() -> dict:
     """Keep the current database and its documents as the demo state."""
     _refuse_if_busy()
-    with db.connect() as conn:  # a visitor's sandbox must never become part of the demo
-        if conn.execute(sa.select(sa.func.count()).select_from(db.rfx).where(
-                db.rfx.c.is_sandbox)).scalar():
-            raise Busy("A sandbox is open. Delete every sandbox first, then save the copy.")
     target = snapshot_dir()
     if target.exists():
         shutil.rmtree(target)

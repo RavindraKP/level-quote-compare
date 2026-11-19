@@ -19,7 +19,7 @@ from pathlib import Path
 import sqlalchemy as sa
 
 from components import backend
-from level import copy, db, sandbox, worker
+from level import copy, db, worker
 from level.agents.analyst import audit
 from level.agents.copilot import draft
 from level.core.cells import in_totals
@@ -105,7 +105,6 @@ def current_rfx(rfx_id: int | None = None) -> dict | None:
     event with no replies yet is never chosen over one the buyer is working on (UX B10)."""
     rows = _working_events()
     picked = [r for r in rows if r["id"] == rfx_id]
-    rows = [r for r in rows if not r["is_sandbox"]]  # a sandbox is only shown when picked
     issued = [r for r in rows if r["status"] != "draft"]
     with db.connect() as conn:
         replied = set(conn.execute(sa.select(db.message.c.rfx_id).where(
@@ -122,10 +121,8 @@ def _working_events() -> list[dict]:
 
 
 def events() -> list[dict]:
-    """Every issued event, then the sandboxes (drafts too), newest first (sidebar picker)."""
-    rows = _working_events()
-    return ([r for r in rows if r["status"] != "draft" and not r["is_sandbox"]]
-            + [r for r in rows if r["is_sandbox"]])
+    """Every issued event, newest first (for the sidebar picker)."""
+    return [r for r in _working_events() if r["status"] != "draft"]
 
 
 def lines(rfx_id: int) -> list[dict]:
@@ -708,9 +705,6 @@ def set_assumption(
     """Change one global input (T7), log it, and recompute every cell."""
     if _dec(value) is None:
         raise ValueError(f"{key} must be a number")
-    if sandbox.is_sandbox(rfx_id):  # shared by every event: a sandbox must not change them
-        raise sandbox.Limit("Assumptions are shared with every event and cannot be changed "
-                            "from the sandbox.")
     with db.begin() as conn:
         old = (
             conn.execute(sa.select(db.assumption).where(db.assumption.c.key == key))
@@ -863,7 +857,6 @@ def add_reply(
     body = (body or "").strip()
     if not files and not body:
         raise ValueError("Add a file or paste the reply text.")
-    sandbox.check_upload(rfx_id, [len(f.data) for f in files])  # caps API use in a sandbox
     with db.begin() as conn:
         if vendor_id is None:
             name = (new_vendor_name or "").strip()
@@ -934,10 +927,6 @@ def add_reply(
 
 def retry_message(message_id: int) -> list[int]:
     """Queue a fresh run for a reply whose last run failed."""
-    with db.connect() as conn:
-        rfx_id = conn.execute(sa.select(db.message.c.rfx_id).where(
-            db.message.c.id == message_id)).scalar()
-    sandbox.check_read(rfx_id)
     return [
         worker.enqueue(
             backend.PIPELINE_JOB_KIND,
@@ -1035,8 +1024,10 @@ def tracker(rfx_id: int) -> list[dict]:
     and the questionnaire result. Counts only; no prices."""
     grid = load_grid(rfx_id)
     replies = messages(rfx_id, "in")
-    issues = _rows(sa.select(db.flag.c.vendor_id).where(db.flag.c.rfx_id == rfx_id,
-                                                        db.flag.c.state == "open"))
+    from components import review_data  # imported here: review_data imports this module
+
+    # the Review queue's undecided points, so Inbox, the sidebar badge and Review agree
+    issues = [i.flag for i in review_data.issues(rfx_id) if not i.decided]
     rows = []
     for v in grid.vendors:
         theirs = [m for m in replies if m["vendor_id"] == v["id"]]
@@ -1051,7 +1042,7 @@ def tracker(rfx_id: int) -> list[dict]:
             "Received": copy.date_time(max((m["received_at"] or "" for m in theirs),
                                            default=None)) if theirs else "—",
             "Lines quoted": f"{quoted}/{len(grid.lines)}" if v["replied"] else "—",
-            "Open issues": sum(1 for f in issues if f["vendor_id"] == v["id"]),
+            "Open issues": sum(1 for f in issues if f.vendor_id == v["id"]),
             "Requirements": copy.VERDICT_LABEL[v["verdict"]],
         })
     return rows

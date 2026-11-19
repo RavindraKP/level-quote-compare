@@ -13,9 +13,8 @@ import pandas as pd
 import streamlit as st
 from components import data, frame
 
-from level import copy, llm, sandbox
-from level.agents.copilot import agent, draft, line_list
-from level.pipeline import intake
+from level import copy, llm
+from level.agents.copilot import agent, draft
 
 log = logging.getLogger(__name__)
 
@@ -111,76 +110,8 @@ def past_events_panel(rid: int | None, expanded: bool) -> None:
                           width="stretch")
 
 
-def line_list_panel(rid: int, expanded: bool) -> None:
-    """Paste or upload the buyer's own line list; read in code, shown before it is saved."""
-    key = f"line_list_{rid}"
-    with st.expander("Paste or upload a line list", expanded=expanded):
-        st.caption("One line per row: description, unit, annual quantity. A header row such as "
-                   "\"Item | Unit | Qty\" is read too; other columns are kept as specification "
-                   "details. Or describe the lines to the co-pilot.")
-        with st.form(f"{key}_form", border=False):
-            pasted = st.text_area("Paste from Excel, or type", height=130,
-                                  placeholder="Laptop, 14 inch, 16 GB RAM\tpiece\t120")
-            upload = st.file_uploader("Or upload an Excel or CSV file",
-                                      type=["xlsx", "xls", "csv", "txt"])
-            replace = st.checkbox("Replace the lines already in the draft")
-            read = st.form_submit_button("Read the list", type="primary")
-        if read:
-            try:
-                rows = (line_list.rows_from_file(upload.getvalue(), upload.name) if upload
-                        else line_list.rows_from_text(pasted or ""))
-                st.session_state[key] = (*line_list.parse(rows), replace)
-            except intake.Unreadable as exc:
-                st.error(f"Could not read this list: {exc}.")
-        if key not in st.session_state:
-            return
-        lines, notes, replace = st.session_state[key]
-        for n in notes:
-            st.caption(n)
-        if not lines:
-            return
-        st.dataframe(pd.DataFrame([{
-            "No.": ln["line_no"], "Description": ln["description"],
-            "Specification": copy.spec_text(ln["spec"]), "Unit": ln.get("canonical_uom") or "—",
-            "Annual qty": _qty(ln.get("annual_qty")), "Plant": ln.get("plant") or ""}
-            for ln in lines]), hide_index=True, width="stretch")
-        add, cancel = st.columns(2)
-        if add.button(f"Add these {copy.plural(len(lines), 'line')}" if not replace else
-                      f"Replace the lines with these {len(lines)}", type="primary",
-                      width="stretch"):
-            have = [ln["line_no"] for ln in draft.snapshot(rid)["lines"]]
-            if replace and have:
-                draft.remove_lines(rid, have)
-            elif have:  # added after the lines already there
-                lines = [{**ln, "line_no": max(have) + i} for i, ln in enumerate(lines, 1)]
-            draft.upsert_lines(rid, lines)
-            st.session_state.pop(key)
-            st.rerun()
-        if cancel.button("Discard this list", width="stretch"):
-            st.session_state.pop(key)
-            st.rerun()
-
-
-def sandbox_taking_quotes(rid: int) -> None:
-    """A sandbox whose lines are set: they are fixed now, like a sent RFx."""
-    st.success("Your lines are set and this sandbox is taking quotes. Add each vendor's quote "
-               "on the Inbox page with Add a reply.")
-    if st.button("Go to the Inbox", type="primary"):
-        st.switch_page("views/2_Inbox.py")
-    st.dataframe(pd.DataFrame([{
-        "No.": ln["line_no"], "Description": ln["description"],
-        "Specification": copy.spec_text(ln["spec"]), "Unit": ln["canonical_uom"],
-        "Annual qty": _qty(ln["annual_qty"])} for ln in data.lines(rid)]),
-        hide_index=True, width="stretch")
-
-
-shown_id = st.session_state.get("rfx_id")
-in_sandbox = sandbox.is_sandbox(shown_id)
-rfx = draft.current_draft(shown_id if in_sandbox else None)  # a sandbox shows only its own
-frame.header(data.current_rfx(rfx["id"] if rfx else shown_id), "RFx")
-if rfx is None and in_sandbox:
-    sandbox_taking_quotes(shown_id)
-    st.stop()
+rfx = draft.current_draft()
+frame.header(data.current_rfx(rfx["id"] if rfx else st.session_state.get("rfx_id")), "RFx")
 if rfx is None:
     shown = data.current_rfx(st.session_state.get("rfx_id"))
     if just_sent := st.session_state.get("just_sent"):
@@ -248,12 +179,7 @@ with chat_col:
                     steps.caption(" → ".join(used))
 
                 try:
-                    sandbox.check_chat(rid)  # caps model use in a sandbox
                     agent.run_turn(rid, prompt, on_text=show_text, on_tool=show_tool)
-                except sandbox.Limit as exc:
-                    steps.empty()
-                    st.warning(str(exc))
-                    st.stop()
                 except llm.MissingAPIKey:
                     st.error("The co-pilot is not available: this app has no API key set. "
                              "You can still edit the draft directly on the right.")
@@ -377,8 +303,8 @@ with draft_col:
 
     issues = draft.check_completeness(rid)
     if issues:
-        with st.expander(f"{copy.plural(len(issues), 'point')} to settle"
-                         + ("" if in_sandbox else " before sending"), expanded=True):
+        with st.expander(f"{copy.plural(len(issues), 'point')} to settle before sending",
+                         expanded=True):
             st.markdown("\n".join(f"- {i}" for i in issues))
     else:
         st.success(
@@ -386,15 +312,9 @@ with draft_col:
             "question has a pass rule; the terms and reply date are set."
         )
 
-    if err := st.session_state.pop("edit_error", None):  # from a table edit just made
-        st.error(err)
-    t_lines, t_q, t_terms, t_send = st.tabs(
-        ["Lines", "Questionnaire", "Terms",
-         "Start adding quotes" if in_sandbox else "Vendors & send"])
+    t_lines, t_q, t_terms, t_send = st.tabs(["Lines", "Questionnaire", "Terms", "Vendors & send"])
 
     with t_lines:
-        if in_sandbox:
-            line_list_panel(rid, expanded=not snap["lines"])
         ref_prices = draft.reference_prices(rid)  # buyer only; never in snapshot() or sent
         rows = [
             {
@@ -504,19 +424,6 @@ with draft_col:
                    sorted({ln["plant"] for ln in snap["lines"] if ln["plant"]}))
 
     with t_send:
-        if in_sandbox:
-            st.markdown("Nothing is emailed from a sandbox. When your lines are ready, add each "
-                        "vendor's quote yourself on the Inbox page: Excel, PDF, Word, a photo, "
-                        "or the text of their email.")
-            st.caption(f"Up to {sandbox.MAX_FILES} files, {sandbox.MAX_FILE_MB} MB each. Lines "
-                       "cannot be changed once you start adding quotes.")
-            if st.button("Start adding quotes", type="primary"):
-                try:
-                    sandbox.open_for_replies(rid)
-                    st.switch_page("views/2_Inbox.py")
-                except ValueError as exc:
-                    st.error(str(exc))
-            st.stop()
         vendors = draft.all_vendors()
         names = {v["id"]: v["name"] for v in vendors}
         invited = sorted(draft.invited_ids(rid))
@@ -573,3 +480,5 @@ with draft_col:
             st.caption("You can send with points still open, but replies to those lines may "
                        "not compare.")
 
+if err := st.session_state.pop("edit_error", None):
+    st.error(err)

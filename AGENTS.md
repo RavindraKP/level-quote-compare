@@ -4,7 +4,7 @@
 
 ```bash
 uv sync
-uv run pytest -q                           # about 350 tests; live-model tests skip without a key
+uv run pytest -q                           # about 340 tests; live-model tests skip without a key
 uv run ruff check .
 uv run python -m evals.run --seed A --fake # scoring harness against a fake system
 ```

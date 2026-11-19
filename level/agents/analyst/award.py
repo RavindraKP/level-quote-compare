@@ -25,13 +25,14 @@ def scenarios(rfx_id: int, pinned_only: bool = False, limit: int = 50) -> list[d
         query = query.where(db.scenario.c.pinned.is_(True))
     with db.connect() as conn:
         rows = conn.execute(query.order_by(db.scenario.c.id.desc()).limit(limit)).mappings().all()
-    out = []
-    for row in rows:
-        _, result = load_scenario(row["id"])
-        out.append({"id": row["id"], "name": row["name"], "pinned": row["pinned"],
-                    "is_award": row["is_award"], "result": result,
-                    "headline": summary.headline(result)})
-    return out
+    return [_option(row) for row in rows]
+
+
+def _option(row) -> dict:
+    _, result = load_scenario(row["id"])
+    return {"id": row["id"], "name": row["name"], "pinned": row["pinned"],
+            "is_award": row["is_award"], "result": result,
+            "headline": summary.headline(result)}
 
 
 def option_name(rfx_id: int, scenario_id: int) -> str:
@@ -68,8 +69,9 @@ def award(rfx_id: int, scenario_id: int, actor: str = "buyer") -> list[int]:
             before={"status": before},
             after={"status": "awarded", "scenario": row["name"],
                    "unconfirmed_prices": summary.risk(result)["unconfirmed_count"]}))
-        vendor_ids = conn.execute(sa.select(db.invitation.c.vendor_id).where(
-            db.invitation.c.rfx_id == rfx_id)).scalars().all()
+        # only the vendors this option awards lines to are asked about their open points
+        vendor_ids = [v for v in conn.execute(sa.select(db.invitation.c.vendor_id).where(
+            db.invitation.c.rfx_id == rfx_id)).scalars().all() if v in result.vendors_used]
         drafted = set(conn.execute(sa.select(db.message.c.vendor_id).where(
             db.message.c.rfx_id == rfx_id, db.message.c.direction == "out",
             db.message.c.status == "draft",
@@ -80,7 +82,11 @@ def award(rfx_id: int, scenario_id: int, actor: str = "buyer") -> list[int]:
 
 
 def awarded(rfx_id: int) -> dict | None:
-    return next((s for s in scenarios(rfx_id, pinned_only=True) if s["is_award"]), None)
+    """The awarded option, even if it was later taken off the Award page."""
+    with db.connect() as conn:
+        row = conn.execute(sa.select(db.scenario).where(
+            db.scenario.c.rfx_id == rfx_id, db.scenario.c.is_award.is_(True))).mappings().first()
+    return _option(row) if row else None
 
 
 def memo_docx(rfx_id: int, scenario_id: int) -> bytes:

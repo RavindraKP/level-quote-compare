@@ -22,7 +22,7 @@ Level went through three QA passes, a full UX audit and a final scoring run. Eac
 
 ## Final state
 
-- About 350 unit tests pass; lint is clean.
+- About 340 unit tests pass; lint is clean.
 - Final scores on three datasets (demo, unseen quotes, a new vendor layout): **0 wrong prices shown as verified**, 100% of prices correct or marked for checking, 100% of the 26 planted ugly edges handled, 90–95% of the analyst questions answered correctly.
 - One change that halved review items was **reverted** before submission because it lowered accuracy on unseen quotes; it was not tuned to the answer key.
 

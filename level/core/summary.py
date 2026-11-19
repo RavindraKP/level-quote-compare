@@ -31,6 +31,18 @@ def by_vendor(result: ScenarioResult) -> dict[int, dict]:
     return out
 
 
+def vendor_split(result: ScenarioResult) -> list[dict]:
+    """The award split by vendor, largest first: lines won, annual value, share of the
+    option's total (a percentage, None when the option has no total) and prices not yet
+    verified. Lines with no price are left out (never counted as zero)."""
+    total = result.total_inr
+    rows = [{"vendor_id": vid, "lines": r["lines"], "total_inr": r["total_inr"],
+             "share_pct": (r["total_inr"] / total * 100) if total else None,
+             "unconfirmed_lines": r["unconfirmed_lines"]}
+            for vid, r in by_vendor(result).items()]
+    return sorted(rows, key=lambda r: (-r["total_inr"], r["vendor_id"]))
+
+
 def risk(result: ScenarioResult) -> dict:
     """The doubt this result rests on: unconfirmed allocated lines and the rupees at stake.
 

@@ -68,8 +68,6 @@ rfx = sa.Table(
     sa.Column("status", sa.Text, nullable=False, default="draft"),
     sa.Column("terms", sa.JSON, default=dict),
     sa.Column("issued_at", sa.Text),
-    # A "Try it with your own files" event (level/sandbox.py): kept apart from real events.
-    sa.Column("is_sandbox", sa.Boolean, nullable=False, default=False, server_default="0"),
     _created(),
 )
 
@@ -465,8 +463,7 @@ def connect_readonly() -> sa.Connection:
 
 
 # Columns added after a database may already exist (a saved demo, a hosted disk).
-_ADDED_COLUMNS = [("answer", "stance", "TEXT"),
-                  ("rfx", "is_sandbox", "BOOLEAN NOT NULL DEFAULT 0")]
+_ADDED_COLUMNS = [("answer", "stance", "TEXT")]
 
 
 def init() -> None:

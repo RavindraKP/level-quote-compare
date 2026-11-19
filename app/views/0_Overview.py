@@ -9,85 +9,10 @@ import os
 import streamlit as st
 from components import data, frame, style
 
-from level import copy, demo, sandbox, worker
+from level import copy, demo, worker
 
 rfx = data.current_rfx(st.session_state.get("rfx_id"))
 frame.header(rfx, "Overview")
-
-
-def to_demo_event() -> None:
-    """Show the default (non-sandbox) event on every page again."""
-    default = data.current_rfx(None)
-    st.session_state["rfx_id"] = default["id"] if default else None
-
-
-def try_it_entry() -> None:
-    """The way in for a visitor with their own RFx and quotes (a separate sandbox event)."""
-    with st.container(border=True):
-        text, button = st.columns([3, 1], vertical_alignment="center")
-        text.markdown("**Try it with your own files**  \nSet a few lines of your own, add vendor "
-                      "quotes in any format, then review, compare and award them. This opens a "
-                      "separate sandbox; the demo event stays as it is.")
-        text.caption("Files you add are read by an AI service: do not use confidential "
-                     f"documents. Up to {sandbox.MAX_FILES} quote files per sandbox, "
-                     f"{sandbox.MAX_FILE_MB} MB each.")
-        if button.button("Try it with your own files", type="primary", width="stretch",
-                         help=copy.SANDBOX_START_HELP):
-            try:
-                st.session_state["rfx_id"] = sandbox.create()
-                st.switch_page("views/1_RFx.py")
-            except sandbox.Limit as exc:
-                st.warning(str(exc))
-        if any(e["is_sandbox"] for e in data.events()):
-            text.caption("Sandboxes already started are in the event list in the sidebar.")
-
-
-def sandbox_panel(event: dict) -> None:
-    """Where the visitor is in the sandbox, what it has used, and the way out."""
-    used = sandbox.usage(event["id"])
-    has_replies = bool(data.messages(event["id"], "in"))
-    with st.container(border=True):
-        if event["status"] == "draft":
-            st.markdown("**Next: set your lines.** Paste or upload a line list on the RFx page, "
-                        "or describe the lines to the co-pilot there.")
-            if st.button("Go to the RFx page", type="primary"):
-                st.switch_page("views/1_RFx.py")
-        elif not has_replies:
-            st.markdown("**Next: add vendor quotes.** On the Inbox page, use Add a reply for each "
-                        "vendor: Excel, PDF, Word, a photo, or the text of their email.")
-            if st.button("Go to the Inbox", type="primary"):
-                st.switch_page("views/2_Inbox.py")
-        else:
-            st.markdown("Review, Compare, Analyst and Award work on this sandbox as on any event.")
-        st.caption(f"Used so far: {used['files']} of {sandbox.MAX_FILES} files · replies read "
-                   f"{used['reads']} of {sandbox.MAX_READS} times · {used['chat']} of "
-                   f"{sandbox.MAX_CHAT} questions to the co-pilot and analyst.")
-        back, remove = st.columns(2)
-        if back.button("Back to the demo event", width="stretch"):
-            to_demo_event()
-            st.rerun()
-        with remove.popover("Delete this sandbox and its files", width="stretch"):
-            st.markdown("Removes this sandbox, its replies, the vendors added to it and the files "
-                        "you uploaded. The demo event is not touched. This cannot be undone.")
-            if st.button("Delete this sandbox and its files", type="primary",
-                         key="sandbox_delete"):
-                try:
-                    gone = sandbox.delete(event["id"])
-                    st.session_state["sandbox_msg"] = (
-                        f"Sandbox deleted: {copy.plural(gone['replies'], 'reply', 'replies')} "
-                        f"and {copy.plural(gone['files'], 'file')} removed.")
-                    to_demo_event()
-                    st.rerun()
-                except sandbox.Busy as exc:
-                    st.warning(str(exc))
-
-
-if rfx is not None and rfx.get("is_sandbox"):
-    sandbox_panel(rfx)
-else:
-    try_it_entry()
-if "sandbox_msg" in st.session_state:  # the result of a delete, shown after the rerun
-    st.success(st.session_state.pop("sandbox_msg"))
 if rfx is None:
     st.info("No event yet. Start one on the RFx page; it appears here once it is sent to "
             "vendors.")
@@ -99,12 +24,9 @@ else:
         note.info(f"{copy.plural(len(waiting), 'reply', 'replies')} not read yet. Reading "
                   "runs in the background; follow it on the Inbox page.")
         if button.button("Read all replies", type="primary", width="stretch"):
-            try:
-                for m in waiting:
-                    data.retry_message(m["id"])
-                st.switch_page("views/2_Inbox.py")
-            except sandbox.Limit as exc:
-                st.warning(str(exc))
+            for m in waiting:
+                data.retry_message(m["id"])
+            st.switch_page("views/2_Inbox.py")
     o = data.overview(rfx["id"])
     times = [t["minutes"] for t in o["timings"]]
     by = o["closed_by"]

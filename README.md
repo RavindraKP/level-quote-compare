@@ -19,9 +19,8 @@ It was built as a product prototype for the brief "Kill the quote spreadsheet": 
 3. **Review:** only the points the checks could not settle reach a person, most money at stake first.
 4. **Compare:** every vendor on the same lines, unit and currency. Every price has a status and a receipt: the vendor's own words, then each conversion step.
 5. **Ask:** an analyst answers questions in plain language ("split it, cheapest per line, only vendors who cleared the questionnaire") through a tested award calculator, with cautions attached by code.
-6. **Award:** compare saved options, award, and export a memo whose first page states how much of the award rests on prices nobody has verified yet.
+6. **Award:** compare saved options and the vendor split, confirm the award, and export a memo whose first page states how much of the award rests on prices nobody has verified yet.
 7. **Vendor link:** each vendor gets an optional personal link that asks only the open questions about their own quote. A vendor never sees another vendor's data.
-8. **Sandbox:** "Try it with your own files" on Overview creates a separate event for testing with your own line list and quotes.
 
 ## The ten rules the code follows
 
@@ -44,7 +43,7 @@ Level was built by one person working with AI coding agents (Claude Code), in se
 
 Quality was held by three things rather than by trust in the agents:
 
-- **Tested code for every number:** all arithmetic is in `level/core/` with unit tests (about 350 in total).
+- **Tested code for every number:** all arithmetic is in `level/core/` with unit tests (about 340 in total).
 - **Evals against an answer key the system never sees:** a generator writes the vendor documents and the ground truth from a seed, with 26 planted "ugly edges". The final runs cover the demo data, a second set of quotes never used while building, and a sixth vendor layout nobody had seen.
 - **Independent QA passes** in a real browser, which found and fixed blockers. One change that lowered scores on unseen quotes was reverted rather than tuned to the answer key.
 
@@ -123,7 +122,6 @@ level/            no Streamlit imports; testable on its own
   llm.py          the only Anthropic SDK wrapper
   worker.py       background job queue
   copy.py         every word a buyer or vendor reads
-  sandbox.py      "Try it with your own files"
   pipeline/       intake → extract → match → verify, photo double-read
   core/           pure calculations: normalise, landed price, checks, cells, award scenarios
   agents/         RFx co-pilot, analyst, vendor co-pilot

@@ -43,18 +43,11 @@ def _audit(conn, actor: str, action: str, rfx_id: int, after) -> None:
 # --- The event ---------------------------------------------------------------------------
 
 
-def current_draft(sandbox_id: int | None = None) -> dict | None:
-    """The newest real draft. With sandbox_id, that sandbox while it is still a draft: the
-    RFx page shows a sandbox only to the visitor working on it."""
-    if sandbox_id is not None:
-        where = [db.rfx.c.id == sandbox_id, db.rfx.c.is_sandbox]
-    else:
-        where = [sa.not_(db.rfx.c.is_sandbox)]
+def current_draft() -> dict | None:
     with db.connect() as conn:
         row = (
             conn.execute(
-                sa.select(db.rfx).where(db.rfx.c.status == "draft", *where)
-                .order_by(db.rfx.c.id.desc())
+                sa.select(db.rfx).where(db.rfx.c.status == "draft").order_by(db.rfx.c.id.desc())
             )
             .mappings()
             .first()
@@ -68,9 +61,8 @@ _REF = re.compile(r"^(?P<head>.*?)(?P<num>\d+)$")  # 'SF/PKG/FY26/014' -> 'SF/PK
 def next_ref(conn) -> str | None:
     """The buyer's own numbering, continued: the newest event numbered 'SF/PKG/FY26/014'
     makes the next draft 'SF/PKG/FY26/015'. None if no event has a number (UX audit M14)."""
-    refs = [(t or {}).get("ref") for t in conn.execute(  # sandboxes have their own numbers
-        sa.select(db.rfx.c.terms).where(sa.not_(db.rfx.c.is_sandbox))
-        .order_by(db.rfx.c.id.desc())).scalars()]
+    refs = [(t or {}).get("ref") for t in conn.execute(
+        sa.select(db.rfx.c.terms).order_by(db.rfx.c.id.desc())).scalars()]
     used = {r for r in refs if r}
     for ref in refs:
         m = _REF.match(ref or "")
@@ -252,8 +244,7 @@ def history_sources(rfx_id: int) -> list[dict]:
             conn.execute(
                 sa.select(db.rfx.c.id, db.rfx.c.title, sa.func.count(db.rfx_line.c.id).label("n"))
                 .join(db.rfx_line, db.rfx_line.c.rfx_id == db.rfx.c.id)
-                .where(db.rfx.c.id != rfx_id, db.rfx.c.status != "draft",
-                       sa.not_(db.rfx.c.is_sandbox))  # a sandbox is never "last year"
+                .where(db.rfx.c.id != rfx_id, db.rfx.c.status != "draft")
                 .group_by(db.rfx.c.id)
                 # finished (awarded) events first: "last year" is the last awarded event,
                 # not this year's event still collecting quotes (UX audit H10)
@@ -325,8 +316,7 @@ def past_events(exclude_rfx_id: int | None = None) -> list[dict]:
     """
     with db.connect() as conn:
         events = [dict(r) for r in conn.execute(
-            sa.select(db.rfx).where(db.rfx.c.status == "awarded", sa.not_(db.rfx.c.is_sandbox))
-            .order_by(db.rfx.c.id.desc())
+            sa.select(db.rfx).where(db.rfx.c.status == "awarded").order_by(db.rfx.c.id.desc())
         ).mappings()]
         names = dict(conn.execute(sa.select(db.vendor.c.id, db.vendor.c.name)).all())
         out = []
@@ -561,11 +551,6 @@ def check_completeness(rfx_id: int) -> list[str]:
     for key in TERM_KEYS_NEEDED:
         if not terms.get(key):
             issues.append(f"Terms: {copy.field_label(key).lower()} is not stated.")
-    with db.connect() as conn:
-        is_sandbox = conn.execute(sa.select(db.rfx.c.is_sandbox).where(
-            db.rfx.c.id == rfx_id)).scalar()
-    if is_sandbox:  # a sandbox is never sent: its vendors come with the replies added to it
-        return issues
     if not terms.get("due"):
         issues.append("Terms: no reply-by date. Vendors need a date to quote by.")
     if not snap["invited_vendors"]:

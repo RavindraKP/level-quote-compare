@@ -977,20 +977,9 @@ def term_rows(terms: dict | None, skip: tuple[str, ...] = ("title",)) -> list[di
 
 
 def event_choice(rfx: dict) -> str:
-    """How an event reads in the sidebar picker: 'SF/PKG/FY26/014 · Collecting quotes'; a
-    sandbox reads 'Sandbox 12 · Draft'."""
+    """How an event reads in the sidebar picker: 'SF/PKG/FY26/014 · Collecting quotes'."""
     status = EVENT_STATUS.get(rfx["status"], str(rfx["status"]).capitalize())
-    if rfx.get("is_sandbox"):
-        return f"Sandbox {rfx['id']} · {status}"
     return f"{event_number(rfx)} · {status}"
-
-
-# --- Sandbox ("Try it with your own files") -------------------------------------------------
-SANDBOX_CHIP = "Sandbox"
-SANDBOX_NOTE = ("Sandbox with your own files. Nothing you do here changes the demo event. "
-                "Files you add are read by an AI service: do not use confidential documents.")
-SANDBOX_START_HELP = ("Opens a separate, empty event for your own RFx lines and vendor quotes. "
-                      "The demo event stays as it is.")
 
 
 def event_stage(rfx: dict, all_replied: bool = False, now: datetime | None = None) -> str:

@@ -4,7 +4,7 @@ emails sent, and Add a reply. Layout and calls only."""
 import streamlit as st
 from components import data, frame
 
-from level import copy, sandbox
+from level import copy
 from level.agents.vendor_copilot.link import link_url
 from level.types import CellState
 
@@ -14,21 +14,7 @@ if rfx is None:
     st.info("No event yet. Create one on the RFx page and send it to vendors; their replies "
             "appear here.")
     st.stop()
-if rfx.get("is_sandbox") and rfx["status"] == "draft":
-    st.info("Set your lines on the RFx page first, then press \"Start adding quotes\". Vendor "
-            "quotes are added here after that.")
-    if st.button("Go to the RFx page", type="primary"):
-        st.switch_page("views/1_RFx.py")
-    st.stop()
 n_lines = len(data.lines(rfx["id"]))
-
-
-def read_reply(message_id: int) -> None:
-    """Queue a reading; in a sandbox the reading cap may say no (shown above the replies)."""
-    try:
-        data.retry_message(message_id)
-    except sandbox.Limit as exc:
-        st.session_state["read_limit"] = str(exc)
 
 
 @st.dialog("Add a reply", width="large")
@@ -36,10 +22,6 @@ def add_reply_dialog() -> None:
     vendors = data.vendors(rfx["id"])
     options = [v["id"] for v in vendors] + ["new"]
     names = {v["id"]: v["name"] for v in vendors} | {"new": "A new vendor"}
-    if rfx.get("is_sandbox"):
-        used = sandbox.usage(rfx["id"])["files"]
-        st.caption(f"{copy.SANDBOX_NOTE} Files used: {used} of {sandbox.MAX_FILES}, up to "
-                   f"{sandbox.MAX_FILE_MB} MB each.")
     with st.form("add_reply", border=False):
         pick = st.selectbox("Vendor", options, format_func=names.get)
         new_name = st.text_input("New vendor's name (only for a new vendor)")
@@ -92,8 +74,6 @@ def file_problem(m: dict) -> str | None:
 def replies() -> None:
     """Re-renders every 2 s on its own, reading job rows; the rest of the page stays still."""
     msgs = data.messages(rfx["id"], "in")
-    if limit := st.session_state.pop("read_limit", None):
-        st.warning(limit)
     if not msgs:
         st.info("No replies yet. Replies appear here as vendors respond; you can also add one "
                 "yourself with Add a reply.")
@@ -106,7 +86,7 @@ def replies() -> None:
         if button.button(f"Read all {len(waiting)}" if len(waiting) > 1 else "Read it now",
                          type="primary", width="stretch", key="read_all"):
             for m in waiting:
-                read_reply(m["id"])
+                data.retry_message(m["id"])
             st.rerun()
     for m in msgs:
         jobs = data.jobs_for_message(m["id"])
@@ -121,14 +101,14 @@ def replies() -> None:
             if job is None:
                 status.warning("Not read yet.")
                 if status.button("Read this reply", key=f"read_{m['id']}"):
-                    read_reply(m["id"])
+                    data.retry_message(m["id"])
                     st.rerun()
             elif job.status in ("queued", "running"):
                 status.progress(job.progress, text=copy.reading_stage(job.stage, vendor, n_lines))
             elif job.status == "failed":
                 status.error(copy.read_failure(file_problem(m)))
                 if status.button("Try again", key=f"retry_{m['id']}"):
-                    read_reply(m["id"])
+                    data.retry_message(m["id"])
             else:
                 f = data.reply_findings(rfx["id"], m)
                 mins = data.minutes_to_grid(m, jobs)
@@ -142,7 +122,7 @@ def replies() -> None:
                     status.warning(copy.read_failure(problem))
                 if status.button("Read again", key=f"reread_{m['id']}",
                                  help="Reads this reply again from the original files"):
-                    read_reply(m["id"])
+                    data.retry_message(m["id"])
             if m["body"]:
                 with st.expander("Message text"):
                     st.text(m["body"])

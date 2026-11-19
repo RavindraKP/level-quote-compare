@@ -261,6 +261,7 @@ with right:
                 confirm_bulk)(group)
 
     st.markdown(f"**{copy.REVIEW_DECIDE}**")
+    st.text_input(copy.REVIEW_NOTE, key=f"note_{issue.key}")  # typed before deciding
     on_line = issue.is_price
     # A price far from the other quotes is usually a unit slip: entering the right price or
     # asking the vendor is the main action, not accepting it as read (UX audit M9).
@@ -290,7 +291,6 @@ with right:
                     decide("edit_value", new)
         ask = issue.vendor_can_answer and st.button(
             copy.ask_label(issue.vendor), width="stretch", key=f"ask_{issue.key}")
-    st.text_input(copy.REVIEW_NOTE, key=f"note_{issue.key}")
 
     # --- Ask the vendor: the drafted email, inline -------------------------------------------
     if not issue.vendor_can_answer:

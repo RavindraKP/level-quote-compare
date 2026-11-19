@@ -36,11 +36,8 @@ def header(rfx: dict | None, page: str) -> None:
     st.html(
         f'<div class="lv-head"><span class="lv-title">{escape(rfx["title"])}</span>'
         f"{style.chip(stage, STATUS_TONE[stage])}"
-        + (style.chip(copy.SANDBOX_CHIP, "amber") if rfx.get("is_sandbox") else "")
         + "".join(f'<span class="lv-meta">{escape(m)}</span>' for m in meta)
         + "</div>" + stepper(stage, rfx["id"]))
-    if rfx.get("is_sandbox"):  # on every page of a sandbox, so it is never taken for the demo
-        st.caption(copy.SANDBOX_NOTE)
     st.title(page)
 
 
