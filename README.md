@@ -134,3 +134,7 @@ docs/             one-page note, manuals, UX guide, dataset, deploy, QA summary
 ```
 
 All company and vendor names in the data are fictional.
+
+## Licence
+
+© 2026 Ravindra Kumar Pathak. All rights reserved. Shared for evaluation of this submission only; no licence is granted to use, copy, modify or distribute it. See [LICENSE](LICENSE).
