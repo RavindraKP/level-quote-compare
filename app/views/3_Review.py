@@ -262,40 +262,59 @@ with right:
 
     st.markdown(f"**{copy.REVIEW_DECIDE}**")
     st.text_input(copy.REVIEW_NOTE, key=f"note_{issue.key}")  # typed before deciding
-    on_line = issue.is_price
-    # A price far from the other quotes is usually a unit slip: entering the right price or
-    # asking the vendor is the main action, not accepting it as read (UX audit M9).
-    outlier = review_data.is_outlier(issue)
-    a1, a2 = st.columns(2)
-    with a1:
-        if st.button(copy.accept_label(issue.flag.type, issue.price, on_line,
-                                       issue.history_source, issue.flag.reason),
-                     type="secondary" if outlier else "primary", width="stretch",
-                     key=f"ok_{issue.key}"):
-            decide("confirm")
-        for c in issue.flag.candidates if on_line else []:
-            if st.button(copy.use_candidate_label(c), width="stretch",
-                         key=f"use_{issue.key}_{c}"):
-                decide("edit_value", str(c))
-        if on_line and st.button(copy.not_quoted_label(issue.line_no), width="stretch",
-                                 key=f"nq_{issue.key}"):
-            decide("not_quoted")
-    with a2:
-        if on_line:
-            with st.popover(copy.edit_label(), width="stretch",
-                            type="primary" if outlier else "secondary"):
-                new = st.text_input(copy.PRICE_EDIT_FIELD.format(uom=issue.uom or "unit"),
-                                    key=f"val_{issue.key}", placeholder="e.g. 12.50")
-                if st.button(copy.save_price_label(issue.line_no), type="primary",
-                             key=f"save_{issue.key}"):
-                    decide("edit_value", new)
-        ask = issue.vendor_can_answer and st.button(
-            copy.ask_label(issue.vendor), width="stretch", key=f"ask_{issue.key}")
+    # Three fixed slots on every card, same order and widths: Accept, Correct it, Ask the
+    # vendor. A slot that does not apply is shown disabled with a short reason.
+    accept_slot, correct_slot, ask_slot = review_data.decision_slots(issue)
+    ask = False
+
+    def choose(c: review_data.Choice, key: str, kind: str = "secondary") -> None:
+        """One click: the same decide(...) call the page has always made for it."""
+        if c.action == "enter_price":
+            new = st.text_input(copy.PRICE_EDIT_FIELD.format(uom=issue.uom or "unit"),
+                                key=f"val_{issue.key}", placeholder="e.g. 12.50")
+            if st.button(copy.save_price_label(issue.line_no), type="primary",
+                         key=f"save_{issue.key}"):
+                decide("edit_value", new)
+        elif st.button(c.label, type=kind, width="stretch", key=key, wrap=True):
+            decide(c.action, c.value)
+
+    def disabled(slot: review_data.Slot) -> None:
+        st.button(slot.label, disabled=True, width="stretch", key=f"{slot.name}_{issue.key}",
+                  help=slot.reason, wrap=True)
+        st.caption(slot.reason)
+
+    s1, s2, s3 = st.container(key="lv-slots").columns(3)
+    with s1:
+        choose(accept_slot.choice, f"ok_{issue.key}",
+               "primary" if accept_slot.primary else "secondary")
+    with s2:
+        main = correct_slot.choice
+        kind = "primary" if correct_slot.primary else "secondary"
+        if not correct_slot.enabled:
+            disabled(correct_slot)
+        elif main.action == "enter_price":  # the price entry, with "not quoted" inside it
+            with st.popover(main.label, width="stretch", type=kind, wrap=True):
+                choose(main, f"main_{issue.key}")
+                for n, c in enumerate(correct_slot.more):
+                    st.divider()
+                    choose(c, f"more_{issue.key}_{n}")
+        else:  # the other reading, with the other corrections in a small menu beside it
+            c_main, c_more = st.columns([5, 1], gap="small")
+            with c_main:
+                choose(main, f"use_{issue.key}_{main.value}", kind)
+            with c_more, st.popover("", icon=":material/more_horiz:", width="stretch",
+                                    help=copy.SLOT_OTHER_CORRECTIONS_HELP):
+                st.markdown(f"**{copy.SLOT_OTHER_CORRECTIONS}**")
+                for n, c in enumerate(correct_slot.more):
+                    choose(c, f"more_{issue.key}_{n}")
+    with s3:
+        if ask_slot.enabled:
+            ask = st.button(ask_slot.label, width="stretch", key=f"ask_{issue.key}", wrap=True)
+        else:
+            disabled(ask_slot)
 
     # --- Ask the vendor: the drafted email, inline -------------------------------------------
-    if not issue.vendor_can_answer:
-        st.caption(copy.REVIEW_ASK_NOT_FOR_VENDOR)
-    else:
+    if issue.vendor_can_answer:
         drafts = data.outbox_drafts(rfx_id, issue.flag.vendor_id)
         if ask and not drafts:
             with st.spinner(f"Writing the email to {issue.vendor}: grouping their open "

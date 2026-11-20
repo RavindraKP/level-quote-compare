@@ -357,3 +357,72 @@ def question_number(rfx_id: int, vendor_id: int, flag_id: int) -> int | None:
         if flag_id in g.flag_ids:
             return n
     return None
+
+
+# --- Your decision: three fixed slots -------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Choice:
+    """One thing the buyer can click. `action` is what the page does with it: "confirm",
+    "edit_value" (with `value`), "enter_price" (opens the price entry), "not_quoted" or
+    "ask". These map one to one onto the page's existing decide(...) calls and the draft."""
+
+    label: str
+    action: str
+    value: str | None = None
+
+
+@dataclass(frozen=True)
+class Slot:
+    """One of the three decision slots: Accept, Correct it, Ask the vendor. Every card has
+    all three, in this order; a slot that does not apply is shown disabled with `reason`."""
+
+    name: str  # "accept", "correct" or "ask"
+    label: str
+    enabled: bool
+    primary: bool
+    reason: str = ""
+    choice: Choice | None = None  # the slot's main click
+    more: tuple[Choice, ...] = ()  # secondary choices inside the same slot
+
+
+def decision_slots(issue: Issue) -> list[Slot]:
+    """The three decision slots for one issue, always [accept, correct, ask].
+    Presentation only: the labels and the actions the page already offers, arranged in a
+    fixed shape. A likely unit slip makes "Correct it" the main action (UX audit M9)."""
+    f = issue.flag
+    on_line = issue.is_price
+    outlier = is_outlier(issue)
+    accept_text = copy.accept_label(f.type, issue.price, on_line, issue.history_source,
+                                    f.reason)
+    accept = Slot("accept", accept_text, True, not outlier, choice=Choice(accept_text, "confirm"))
+
+    if on_line:
+        enter = Choice(copy.edit_label(), "enter_price")
+        not_quoted = Choice(copy.not_quoted_label(issue.line_no), "not_quoted")
+        held = copy.unit_price(issue.price) if issue.price is not None else None
+        others = [c for c in f.candidates if held is None or copy.unit_price(_dec(c)) != held]
+        uses = [Choice(copy.use_candidate_label(c), "edit_value", str(c)) for c in others]
+        if uses:  # two readings: the other reading is the correction
+            main, more = uses[0], (*uses[1:], enter, not_quoted)
+        else:
+            main, more = enter, (not_quoted,)
+        correct = Slot("correct", main.label, True, outlier, choice=main, more=more)
+    else:
+        correct = Slot("correct", copy.SLOT_CORRECT, False, False,
+                       reason=copy.SLOT_NOTHING_TO_CORRECT)
+
+    ask_text = copy.ask_label(issue.vendor)
+    if issue.vendor_can_answer:
+        ask = Slot("ask", ask_text, True, False, choice=Choice(ask_text, "ask"))
+    else:
+        ask = Slot("ask", ask_text, False, False, reason=copy.SLOT_ONLY_YOU)
+    return [accept, correct, ask]
+
+
+def _dec(value: str) -> Decimal | None:
+    try:
+        return Decimal(str(value).replace(",", ""))
+    except ArithmeticError:
+        return None

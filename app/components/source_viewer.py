@@ -22,6 +22,34 @@ def quote(text: str) -> None:
             "</div>")
 
 
+def preview(evidence: Evidence | None, key: str, show_quote: bool = True,
+            email_body: str | None = None) -> None:
+    """The source in a narrow side panel: where the value is, the cited spreadsheet cell
+    with its neighbours, the vendor's words, and a button that opens the whole file in a
+    large window (sheet picker, pages and zoom work there without moving the panel)."""
+    if evidence is None or (att := data.attachment(evidence.attachment_id)) is None:
+        show(evidence, key, show_quote=show_quote, email_body=email_body)  # no file: compact
+        return
+    path = Path(att["path"])
+    st.caption(f"**{att['filename']}** · {copy.plain(evidence.locator) or 'whole file'}")
+    if not path.exists():
+        st.error("The original file is no longer on this server. Ask the vendor to send it "
+                 "again, or add it with Add a reply.")
+        return
+    loc = sr.parse_locator(evidence.locator)
+    if sr.file_kind(att["filename"], att["mime"]) == "xlsx" and loc.kind == "cell":
+        try:
+            _cell_window(path, loc)
+        except Exception:  # a broken file must not break the panel; the log keeps why
+            log.exception("could not show %s", att["filename"])
+    if evidence.quote and show_quote:
+        quote(evidence.quote)
+    if st.button("Open full size", key=f"{key}_open", width="stretch",
+                 icon=":material/open_in_full:", help=f"Open {att['filename']} in a large window"):
+        st.dialog(att["filename"], width="large")(show)(evidence, f"{key}_full",
+                                                        show_quote, email_body)
+
+
 def show(evidence: Evidence | None, key: str, show_quote: bool = True,
          email_body: str | None = None) -> None:
     """Render the file behind a piece of evidence, with the quoted words marked.
@@ -99,13 +127,30 @@ def _xlsx(path: Path, loc: sr.Locator, key: str) -> None:
     )
     title, df = sr.xlsx_sheet(path, sheet)
     target = sr.cell_position(loc.cell) if loc.kind == "cell" and loc.sheet == title else None
+    if not _window_grid(df, loc, target):  # no cell to point at, or not on this sheet
+        _sheet_grid(df, target, height=320)
+        return
+    with st.expander("Show the whole sheet"):
+        _sheet_grid(df, target, height=320)
+
+
+def _cell_window(path: Path, loc: sr.Locator) -> None:
+    """Only the part of the cited sheet around the cell (for the side panel)."""
+    title, df = sr.xlsx_sheet(path, loc.sheet)
+    if title == loc.sheet:
+        _window_grid(df, loc, sr.cell_position(loc.cell), rows_around=3)
+
+
+def _window_grid(df, loc: sr.Locator, target: tuple[int, str] | None,
+                 rows_around: int = 5) -> bool:
+    """The rows and columns around the cited cell, headings on top. False if no window."""
     window = None
     if target:
         window = sr.cell_window(target[0], target[1], len(df.index), len(df.columns),
+                                rows_around=rows_around,
                                 row_first_col=sr.first_filled_col(df, target[0]))
-    if window is None:  # no cell to point at, or the cell is not on this sheet
-        _sheet_grid(df, target, height=320)
-        return
+    if window is None:
+        return False
     first_row, last_row, first_col, last_col = window
     head = sr.header_row(df, target[0])  # the headings of the table the cell is in
     above = [head] if head and head < first_row else []  # pinned on top when out of range
@@ -114,8 +159,7 @@ def _xlsx(path: Path, loc: sr.Locator, key: str) -> None:
     st.caption(f"The vendor's figure: sheet {loc.sheet}, cell {loc.cell}"
                + (f". Row {head} shows the table's headings." if head else "."))
     _sheet_grid(part, target, header=head, height="content", pin_target=True)
-    with st.expander("Show the whole sheet"):
-        _sheet_grid(df, target, height=320)
+    return True
 
 
 def _sheet_grid(df, target: tuple[int, str] | None, header: int | None = None,

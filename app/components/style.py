@@ -88,8 +88,14 @@ body, .stMarkdown, [data-testid="stDataFrame"] { font-variant-numeric: tabular-n
    stays in view while the page scrolls and scrolls on its own when taller than the window. */
 [data-testid="stColumn"]:has([class*="st-key-lv-panel-"]) {
   position: sticky; top: 0.75rem; align-self: flex-start;
-  max-height: calc(100vh - 1.5rem); overflow-y: auto; overflow-x: hidden; }
+  max-height: calc(100vh - 1.5rem); overflow-y: auto; overflow-x: hidden;
+  overscroll-behavior: contain; }  /* scrolling the panel never moves the page behind it */
 [class*="st-key-lv-panel-"] { background: #FFFFFF; min-width: 0; }
+/* Panel closed: hide its column and give the grid the whole row. */
+[data-testid="stColumn"]:has(.lv-panel-closed) { display: none !important; }
+[data-testid="stHorizontalBlock"]:has(> [data-testid="stColumn"] .lv-panel-closed)
+  > [data-testid="stColumn"] { flex: 1 1 100% !important; width: 100% !important;
+  max-width: 100% !important; }
 [class*="st-key-lv-close-"] { flex: 0 0 auto !important; width: auto !important; }
 [class*="st-key-lv-close-"] button { white-space: nowrap; }
 [class*="st-key-lv-panel-"] [data-testid="stImage"] img,

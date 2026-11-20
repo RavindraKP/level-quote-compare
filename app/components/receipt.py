@@ -61,22 +61,29 @@ def show(r: Receipt, line: dict, vendor: dict, key: str, heading: bool = True) -
         st.markdown("  \n".join(prices))
 
     if r.assumptions_used:
-        st.markdown("**Assumptions used**")
-        st.markdown("\n".join(f"- {copy.assumption_label(k)}: "
-                              f"{copy.indian_numbers(copy.plain(copy.assumption_value(k, v)))}"
-                              for k, v in r.assumptions_used.items()))
+        with st.expander(f"Assumptions used ({len(r.assumptions_used)})"):
+            st.markdown("\n".join(f"- {copy.assumption_label(k)}: "
+                                  f"{copy.indian_numbers(copy.plain(copy.assumption_value(k, v)))}"
+                                  for k, v in r.assumptions_used.items()))
 
     if r.checks:
-        st.markdown("**Checks**")
-
         def mark(ch) -> str:
             if ch.detail.startswith("Not checked"):
                 return "– not run"  # e.g. a photo has no text layer to match against
             return "✓ passed" if ch.passed else "✖ did not pass"
 
-        st.markdown("\n".join(f"- {mark(ch)} · {ch.name}: "
-                              f"{copy.indian_numbers(copy.plain(ch.detail, capitalise=False))}"
-                              for ch in r.checks))
+        # Collapsed when every check passed, open when one did not (the panel stays short).
+        marks = [mark(ch) for ch in r.checks]
+        failed = sum(m.startswith("✖") for m in marks)
+        not_run = sum(m.startswith("–") for m in marks)
+        label = (f"Checks: {failed} of {len(r.checks)} did not pass" if failed
+                 else f"Checks: {len(r.checks) - not_run} passed"
+                 + (f", {not_run} not run" if not_run else ""))
+        with st.expander(label, expanded=bool(failed)):
+            st.markdown("\n".join(
+                f"- {mark(ch)} · {ch.name}: "
+                f"{copy.indian_numbers(copy.plain(ch.detail, capitalise=False))}"
+                for ch in r.checks))
 
     # Only this line's points, each once (a point raised on a price that covers five lines
     # is listed once, not five times: UX audit M11).
@@ -93,9 +100,9 @@ def show(r: Receipt, line: dict, vendor: dict, key: str, heading: bool = True) -
         st.markdown("**Points raised**")
         st.markdown("\n".join(points))
 
-    with st.expander("Source", expanded=q is not None):
-        source_viewer.show(r.evidence, key=f"{key}_src", show_quote=False,
-                           email_body=review_data.run_email_body(q.run_id) if q else None)
+    st.markdown("**Source**")  # compact here; the whole file opens in a large window
+    source_viewer.preview(r.evidence, key=f"{key}_src", show_quote=False,
+                          email_body=review_data.run_email_body(q.run_id) if q else None)
 
     # This price's own history, in words: decisions on its points, the vendor's answers and
     # confirmations, assumption changes. Never the stored records (UX audit B6, M11).

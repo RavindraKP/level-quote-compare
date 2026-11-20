@@ -246,10 +246,14 @@ with tab_com, st.container(border=True):
 
     # The selection is read before the grid is drawn, so the page knows whether to split.
     # Only line rows have receipts; the last rows are totals.
-    grid_key = f"grid_{view}"
-    picked = selected_cell(grid_key)
+    # One key for every price basis: rows and columns are the same in each, so an open
+    # receipt stays open when the basis changes.
+    grid_key = "grid"
+    raw = selected_cell(grid_key)
+    picked = raw if raw and raw[0] < len(grid.lines) and raw[1] in cols else None
+    picked = side_panel.keep_open(grid_key, raw, picked)  # a click on a total keeps it open
     if picked and not (picked[0] < len(grid.lines) and picked[1] in cols):
-        picked = None
+        picked = None  # remembered from another event
     left, right = side_panel.columns(picked is not None)
     with left:
         # Grid at full width when nothing is selected; beside the panel it scrolls sideways
@@ -313,10 +317,12 @@ with tab_tech:
                     else:
                         row[v["name"]] = a["value"]
                 q_rows.append(row)
-            cell = selected_cell("qgrid")
-            if cell and (cell[1] == "Question" or cell[0] >= len(questions)
-                         or all(v["name"] != cell[1] for v in replied)):
-                cell = None
+            raw = selected_cell("qgrid")
+            cell = raw if raw and raw[1] != "Question" and raw[0] < len(questions) and any(
+                v["name"] == raw[1] for v in replied) else None
+            cell = side_panel.keep_open("qgrid", raw, cell)
+            if cell and (cell[0] >= len(questions) or all(v["name"] != cell[1] for v in replied)):
+                cell = None  # remembered from another event
             left, right = side_panel.columns(cell is not None)
             with left:
                 st.dataframe(
@@ -343,15 +349,15 @@ with tab_tech:
                         st.markdown(f"**Answer:** {a['value']}")
                         if why := _why(a, q):
                             st.markdown(f"**Why:** {why}")
-                        source_viewer.show(Evidence(attachment_id=a["attachment_id"],
-                                                    locator=a["evidence_locator"] or "",
-                                                    quote=a["evidence_quote"] or ""),
-                                           key=f"qa_{a['id']}")
+                        source_viewer.preview(Evidence(attachment_id=a["attachment_id"],
+                                                       locator=a["evidence_locator"] or "",
+                                                       quote=a["evidence_quote"] or ""),
+                                              key=f"qa_{a['id']}")
 
     with st.container(border=True):
         st.subheader("Documents")
-        st.caption("Every file vendors sent: quotations, certificates and reports. Select one "
-                   "to read it beside the list.")
+        st.caption("Every file vendors sent: quotations, certificates and reports. Select one, "
+                   "then open it full size from the panel beside the list.")
         docs = data.documents(rfx["id"])
         if not docs:
             st.info("No documents received yet. Quotations, certificates and reports appear "
@@ -374,5 +380,5 @@ with tab_tech:
                                       "docs", subtitle=(f"{(d['kind'] or 'File').capitalize()}"
                                                         f" · received "
                                                         f"{copy.date_time(d['received_at'])}")):
-                    source_viewer.show(Evidence(attachment_id=d["id"], locator="", quote=""),
-                                       key=f"doc_{d['id']}")
+                    source_viewer.preview(Evidence(attachment_id=d["id"], locator="", quote=""),
+                                          key=f"doc_{d['id']}")
