@@ -233,3 +233,5 @@ One line each: decision — reason.
 - `award.awarded()` looks the award up by `is_award` directly, so it is found even if the option was taken off the Award page; the page puts it back at the top of the list — the awarded option must never vanish.
 - Vendor split on the Award page is `level/core/summary.vendor_split` (share as a percentage of the option's total, None when there is no total) — the page only formats.
 - Inbox tracker "Open issues" counts the Review queue's undecided points, the same source as the sidebar badge — so the three counts agree.
+- Compare opens a price's receipt, an answer's detail and a document in a side panel beside the grid (3:2 columns, sticky, own scroll), not under it — owner feedback that details below a full-height grid were missed. Close clears the grid's selection through session state (programmatic dataframe selection, Streamlit 1.67).
+- The Excel source viewer first shows a window around the cited cell (5 rows either side, up to 2 columns past it, the table's heading row on top, the cited column pinned) with the whole sheet in an expander — owner saw a price cell off-screen and thought the file was misread.

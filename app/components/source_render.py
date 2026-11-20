@@ -151,6 +151,62 @@ def cell_position(cell: str) -> tuple[int, str]:
     return int(m[2]), m[1]
 
 
+MAX_WINDOW_COLS = 8  # columns shown in the focused window before it starts further right
+
+
+def cell_window(row: int, col: str, n_rows: int, n_cols: int, rows_around: int = 5,
+                cols_after: int = 2, row_first_col: int | None = None
+                ) -> tuple[int, int, int, int] | None:
+    """The part of a sheet to show around one cell, so the cell is always in view.
+
+    row, col: the target ('F21' -> 21, 'F'). n_rows, n_cols: the sheet's size.
+    row_first_col: the first non-empty column of the target row (1-based), used as the left
+    edge only when starting at column A would make the window wider than MAX_WINDOW_COLS.
+    Returns (first_row, last_row, first_col, last_col), 1-based and inclusive, or None when
+    the cell is outside the sheet."""
+    c = column_index_from_string(col)
+    if not (1 <= row <= n_rows and 1 <= c <= n_cols):
+        return None
+    first_row, last_row = max(1, row - rows_around), min(n_rows, row + rows_around)
+    last_col = min(n_cols, c + cols_after)
+    first_col = 1
+    if last_col > MAX_WINDOW_COLS:
+        widest = last_col - MAX_WINDOW_COLS + 1  # as far left as 8 columns allow
+        start = row_first_col if row_first_col and row_first_col <= c else widest
+        first_col = min(max(start, widest, 1), c)
+    return first_row, last_row, first_col, last_col
+
+
+def _is_number(text: str) -> bool:
+    try:
+        float(text.replace(",", "").replace("₹", "").strip())
+        return True
+    except ValueError:
+        return False
+
+
+def header_row(df: pd.DataFrame, before: int) -> int | None:
+    """The nearest row above `before` that looks like a table header: two or more filled
+    cells, none of them a number. Falls back to row 1 when it is above `before`."""
+    for r in range(before - 1, 0, -1):
+        if r not in df.index:
+            continue
+        filled = [str(v).strip() for v in df.loc[r] if str(v).strip()]
+        if len(filled) >= 2 and not any(_is_number(v) for v in filled):
+            return r
+    return 1 if before > 1 and 1 in df.index else None
+
+
+def first_filled_col(df: pd.DataFrame, row: int) -> int | None:
+    """1-based index of the first non-empty cell in a sheet row, or None."""
+    if row not in df.index:
+        return None
+    for i, v in enumerate(df.loc[row], start=1):
+        if str(v).strip():
+            return i
+    return None
+
+
 # --- Word and plain text -----------------------------------------------------
 
 

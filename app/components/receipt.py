@@ -10,10 +10,19 @@ from level.agents.analyst import audit
 from level.types import CellState, Receipt
 
 
-def show(r: Receipt, line: dict, vendor: dict, key: str) -> None:
+def title(r: Receipt, line: dict, vendor: dict) -> str:
+    """Panel heading: 'Line 6 · Kaveri Packaging · ✓ Verified'."""
+    c = r.cell
+    return (f"Line {line['line_no']} · {vendor['name']} · "
+            f"{data.STATE_SYMBOL[c.state]} {data.STATE_LABEL[c.state]}")
+
+
+def show(r: Receipt, line: dict, vendor: dict, key: str, heading: bool = True) -> None:
+    """heading=False leaves out the line and vendor, for a panel that already names them."""
     c = r.cell
     uom = line["canonical_uom"]
-    st.markdown(f"**Line {line['line_no']}. {line['description']}** · {vendor['name']}")
+    if heading:
+        st.markdown(f"**Line {line['line_no']}. {line['description']}** · {vendor['name']}")
     settled = (f" · verified by {copy.CLOSED_BY[c.confirmed_by.value]}"
                if c.confirmed_by and c.state == CellState.CONFIRMED else "")
     st.markdown(f"{data.STATE_SYMBOL[c.state]} **{data.STATE_LABEL[c.state]}**: "

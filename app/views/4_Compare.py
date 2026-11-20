@@ -12,7 +12,7 @@ from html import escape
 
 import pandas as pd
 import streamlit as st
-from components import data, frame, receipt, source_viewer, style
+from components import data, frame, receipt, side_panel, source_viewer, style
 
 from level import copy
 from level.types import CellState, Evidence
@@ -68,8 +68,9 @@ VIEWS = {"unit": "Price per unit", "landed": "Delivered price", "as_quoted": "As
 BASIS = {"unit": "₹ per unit of each line, ex-GST, ex-works",
          "landed": "₹ per unit of each line, ex-GST, delivered to the plant (freight included)",
          "as_quoted": "the vendor's own currency and unit, exactly as written"}
-view = st.segmented_control("Price basis", list(VIEWS), format_func=VIEWS.get, default="unit",
-                            key="view") or "unit"
+# The price-basis control sits with the price comparison below; the tiles use its value from
+# the last run (Streamlit keeps a widget's value in session state under its key).
+view = st.session_state.get("view") or "unit"
 summary = data.vendor_summary(grid, view)
 ranks = data.ranks_by_line(grid, view)
 reasons = data.gating_reasons(rfx["id"])
@@ -81,6 +82,10 @@ failed = {v["id"] for v in grid.vendors if v["verdict"] == "fail"}
 # reply" (UX audit H8): the cells are empty only because reading has not run.
 unread = {v["id"] for v in grid.vendors if v["replied"] and all(
     grid.cells[(v["id"], ln["id"])].state == CellState.AWAITING for ln in grid.lines)}
+summary_box = st.container(border=True)
+summary_box.subheader("Bid summary")
+summary_box.caption("Each vendor's annual value, lines quoted and open issues. Select a "
+                    "vendor's name below for their supplier card.")
 tiles = []
 for v in grid.vendors:
     s = summary[v["id"]]
@@ -97,13 +102,14 @@ for v in grid.vendors:
                   f"{s['quoted']}/{s['lines']} lines · "
                   f"{copy.plural(tracked[v['id']]['Open issues'], 'open issue')} · "
                   f"{verdict}{held}"))
-style.tiles(tiles, muted={i for i, v in enumerate(grid.vendors) if v["id"] in failed})
+with summary_box:
+    style.tiles(tiles, muted={i for i, v in enumerate(grid.vendors) if v["id"] in failed})
 basis = BASIS[view] if view != "as_quoted" else "not comparable as quoted"
-st.caption(f"Annual value of each vendor's priced lines ({basis}). Lines without a price are "
-           "left out, never counted as zero; so is a price that looks like a different unit "
-           "until it is checked.")
+summary_box.caption(f"Annual value of each vendor's priced lines ({basis}; change it under "
+                    "Price comparison). Lines without a price are left out, never counted as "
+                    "zero; so is a price that looks like a different unit until it is checked.")
 
-cards = st.columns(len(grid.vendors))
+cards = summary_box.columns(len(grid.vendors))
 for col, v in zip(cards, grid.vendors, strict=True):
     with col.popover(v["name"], width="stretch"):
         card = data.supplier_card(rfx["id"], v["id"])
@@ -121,6 +127,9 @@ for col, v in zip(cards, grid.vendors, strict=True):
         if card["certificates"]:
             st.dataframe(card["certificates"], hide_index=True, width="stretch")
 
+st.subheader("Bids side by side")
+st.caption("Commercial: every vendor's price for each line. Technical: questionnaire answers "
+           "and the documents vendors sent.")
 tab_com, tab_tech = st.tabs(["Commercial", "Technical"])
 
 
@@ -157,7 +166,34 @@ def header(v: dict) -> str:
     return f"{SHORT[v['id']]} {copy.VERDICT_SYMBOL[v['verdict']]}"
 
 
-with tab_com:
+def _selection(key: str) -> dict:
+    """The current selection of the st.dataframe with this key, from the last rerun."""
+    state = st.session_state.get(key)
+    try:
+        return state["selection"] if state else {}
+    except (KeyError, TypeError):
+        return {}
+
+
+def selected_cell(key: str) -> tuple[int, str] | None:
+    """(row, column) of the selected cell, read before the grid is drawn so the page can
+    decide whether to open the side panel."""
+    cells = _selection(key).get("cells") or []
+    return (cells[0][0], cells[0][1]) if cells else None
+
+
+def selected_rows(key: str) -> list[int]:
+    return list(_selection(key).get("rows") or [])
+
+
+with tab_com, st.container(border=True):
+    st.subheader("Price comparison")
+    st.caption("Prices line by line. Select a price to see where it came from, beside the "
+               "grid.")
+    view_picked = st.segmented_control("Price basis", list(VIEWS), format_func=VIEWS.get,
+                                       default="unit", key="view") or "unit"
+    if view_picked != view:  # the tiles above were drawn with the old basis
+        st.rerun()
     legend = " · ".join(f"{data.STATE_SYMBOL[s]} {data.STATE_LABEL[s]}" for s in CellState)
     st.caption(f"Prices in {BASIS[view]}. {legend}. L1, L2, L3: lowest eligible prices on the "
                "line (verified or assumed, from vendors that meet the requirements); L1 in bold.")
@@ -208,103 +244,135 @@ with tab_com:
         styles.iloc[len(states):, :] = "background-color: #F4F6F8; font-weight: 600"
         return styles
 
-    # The grid takes the full width; the receipt opens under it.
-    event = st.dataframe(
-        df.style.apply(colour, axis=None), hide_index=True, width="stretch",
-        height="content", on_select="rerun",  # every line and the totals, no inner scroll
-        selection_mode="single-cell", key=f"grid_{view}",
-        # Sized to fit five vendors in about 870 px, the content width at a 1280 px screen
-        # (QA pass 3 H5). Text as quoted is left-aligned so it is cut at its end, not start.
-        column_config={"Line": st.column_config.TextColumn(width=200, pinned=True),
-                       "Annual qty": st.column_config.TextColumn(
-                           width=110, pinned=True, alignment="right")}
-        | {col: st.column_config.TextColumn(
-            width=112, alignment="left" if view == "as_quoted" else "right",
-            help=f"{v['name']}: {reasons.get(v['id'], copy.VERDICT_LABEL[v['verdict']])}")
-           for v, col in zip(grid.vendors, cols, strict=True)})
-    st.caption("Select a price to see where it came from. Totals include assumed prices "
-               "and prices still to check; '—' lines are never priced as zero.")
-    picked = event.selection.cells if event else []
-    # Only line rows have receipts; the last three rows are totals.
-    if picked and picked[0][0] < len(grid.lines) and picked[0][1] in cols:
-        row_i, col = picked[0]
+    # The selection is read before the grid is drawn, so the page knows whether to split.
+    # Only line rows have receipts; the last rows are totals.
+    grid_key = f"grid_{view}"
+    picked = selected_cell(grid_key)
+    if picked and not (picked[0] < len(grid.lines) and picked[1] in cols):
+        picked = None
+    left, right = side_panel.columns(picked is not None)
+    with left:
+        # Grid at full width when nothing is selected; beside the panel it scrolls sideways
+        # inside itself with the line column pinned. Sized to fit five vendors in about
+        # 870 px, the content width at a 1280 px screen (QA pass 3 H5). Text as quoted is
+        # left-aligned so it is cut at its end, not start.
+        st.dataframe(
+            df.style.apply(colour, axis=None), hide_index=True, width="stretch",
+            height="content", on_select="rerun",  # every line and the totals, no inner scroll
+            selection_mode="single-cell", key=grid_key,
+            column_config={"Line": st.column_config.TextColumn(width=200, pinned=True),
+                           "Annual qty": st.column_config.TextColumn(
+                               width=110, pinned=picked is None, alignment="right")}
+            | {col: st.column_config.TextColumn(
+                width=112, alignment="left" if view == "as_quoted" else "right",
+                help=f"{v['name']}: {reasons.get(v['id'], copy.VERDICT_LABEL[v['verdict']])}")
+               for v, col in zip(grid.vendors, cols, strict=True)})
+        st.caption("Totals include assumed prices and prices still to check; '—' lines are "
+                   "never priced as zero.")
+        if picked is None:
+            st.info("Select a price in the grid to see the vendor's own words, how it was "
+                    "converted, and which checks it passed. It opens beside the grid.")
+    if picked is not None:
+        row_i, col = picked
         line = grid.lines[row_i]
         vendor = grid.vendors[cols.index(col)]
-        with st.container(border=True):
-            receipt.show(data.receipt(grid, vendor["id"], line["id"]), line, vendor,
-                         key=f"r_{vendor['id']}_{line['id']}")
-    else:
-        st.info("Select a price in the grid to see the vendor's own words, how it was "
-                "converted, and which checks it passed.")
+        r = data.receipt(grid, vendor["id"], line["id"])
+        with side_panel.panel(right, "price", receipt.title(r, line, vendor), grid_key,
+                              subtitle=f"{line['description']} · {BASIS[view]}"):
+            receipt.show(r, line, vendor, key=f"r_{vendor['id']}_{line['id']}",
+                         heading=False)
 
 with tab_tech:
     questions, answers = data.questionnaire(rfx["id"])
     replied = [v for v in grid.vendors if v["replied"]]
-    st.subheader("Questionnaire")
-    if questions and replied:  # the verdict first, so a "Does not meet" is never off-screen (M6)
-        st.html('<table class="lv-ctx">' + "".join(
-            f'<tr><td class="k">{escape(v["name"])}</td><td>'
-            f'{copy.VERDICT_SYMBOL[v["verdict"]]} {copy.VERDICT_LABEL[v["verdict"]]}</td>'
-            f'<td>{escape(_cap(reasons.get(v["id"], "").removeprefix("Does not meet ")))}</td></tr>'
-            for v in replied) + "</table>")
-    if not questions:
-        st.info("This event has no questionnaire. Add questions on the RFx page before "
-                "sending.")
-    else:
-        q_rows = []
-        for q in questions:
-            must = " (required)" if q["is_gating"] else ""
-            row = {"Question": f"{q['q_no']}. {q['text']}{must}"}
-            for v in replied:
+    with st.container(border=True):
+        st.subheader("Questionnaire")
+        st.caption("Each vendor's answers to your questions. Required questions decide "
+                   "whether a vendor can be awarded.")
+        if questions and replied:  # the verdict first, so a "Does not meet" is in view (M6)
+            st.html('<table class="lv-ctx">' + "".join(
+                f'<tr><td class="k">{escape(v["name"])}</td><td>'
+                f'{copy.VERDICT_SYMBOL[v["verdict"]]} {copy.VERDICT_LABEL[v["verdict"]]}</td>'
+                f'<td>{escape(_cap(reasons.get(v["id"], "").removeprefix("Does not meet ")))}'
+                '</td></tr>' for v in replied) + "</table>")
+        if not questions:
+            st.info("This event has no questionnaire. Add questions on the RFx page before "
+                    "sending.")
+        else:
+            q_rows = []
+            for q in questions:
+                must = " (required)" if q["is_gating"] else ""
+                row = {"Question": f"{q['q_no']}. {q['text']}{must}"}
+                for v in replied:
+                    a = answers.get((q["id"], v["id"]))
+                    if not a:
+                        row[v["name"]] = "? not answered" if q["is_gating"] else "not answered"
+                    elif q["is_gating"]:  # only a required question has a pass or fail (QA M7)
+                        row[v["name"]] = (f"{copy.VERDICT_SYMBOL.get(a['verdict'], '?')} "
+                                          f"{a['value']}")
+                    else:
+                        row[v["name"]] = a["value"]
+                q_rows.append(row)
+            cell = selected_cell("qgrid")
+            if cell and (cell[1] == "Question" or cell[0] >= len(questions)
+                         or all(v["name"] != cell[1] for v in replied)):
+                cell = None
+            left, right = side_panel.columns(cell is not None)
+            with left:
+                st.dataframe(
+                    pd.DataFrame(q_rows), hide_index=True, width="stretch", height="content",
+                    on_select="rerun", selection_mode="single-cell", key="qgrid",
+                    column_config={"Question": st.column_config.TextColumn(
+                        width=300 if cell is None else 220, pinned=True)}
+                    | {v["name"]: st.column_config.TextColumn(width=180) for v in replied})
+                st.caption("Required questions: ✓ meets · ✖ does not meet · ? unclear or not "
+                           "answered. Other answers are shown as the vendor gave them, cut to "
+                           "fit. Select an answer to read it in full with the vendor's own "
+                           "words.")
+            if cell is not None:
+                q = questions[cell[0]]
+                v = next(v for v in replied if v["name"] == cell[1])
                 a = answers.get((q["id"], v["id"]))
-                if not a:
-                    row[v["name"]] = "? not answered" if q["is_gating"] else "not answered"
-                elif q["is_gating"]:  # only a required question has a pass or fail (QA M7)
-                    row[v["name"]] = f"{copy.VERDICT_SYMBOL.get(a['verdict'], '?')} {a['value']}"
-                else:
-                    row[v["name"]] = a["value"]
-            q_rows.append(row)
-        qsel = st.dataframe(
-            pd.DataFrame(q_rows), hide_index=True, width="stretch", height="content",
-            on_select="rerun", selection_mode="single-cell", key="qgrid",
-            column_config={"Question": st.column_config.TextColumn(width=300, pinned=True)}
-            | {v["name"]: st.column_config.TextColumn(width=180) for v in replied})
-        st.caption("Each answer is cut to fit; select it to read it in full with the "
-                   "vendor's own words.")
-        st.caption("Required questions: ✓ meets · ✖ does not meet · ? unclear or not "
-                   "answered. Other answers are shown as the vendor gave them. Select an "
-                   "answer to see the vendor's own words.")
-        cells = qsel.selection.cells if qsel else []
-        if cells and cells[0][1] != "Question":
-            q = questions[cells[0][0]]
-            v = next(v for v in replied if v["name"] == cells[0][1])
-            a = answers.get((q["id"], v["id"]))
-            with st.container(border=True):
-                if a is None:
-                    st.write("No answer given. Treated as unclear, never as a pass.")
-                else:
-                    st.markdown(f"**{v['name']}**: "
-                                f"{copy.VERDICT_LABEL.get(a['verdict'] or 'unclear')}. "
-                                f"{_why(a, q)}")
-                    source_viewer.show(Evidence(attachment_id=a["attachment_id"],
-                                                locator=a["evidence_locator"] or "",
-                                                quote=a["evidence_quote"] or ""),
-                                       key=f"qa_{a['id']}")
+                verdict = copy.VERDICT_LABEL.get((a or {}).get("verdict") or "unclear")
+                with side_panel.panel(right, "answer",
+                                      f"Question {q['q_no']} · {v['name']} · {verdict}",
+                                      "qgrid", subtitle=q["text"]):
+                    if a is None:
+                        st.write("No answer given. Treated as unclear, never as a pass.")
+                    else:
+                        st.markdown(f"**Answer:** {a['value']}")
+                        if why := _why(a, q):
+                            st.markdown(f"**Why:** {why}")
+                        source_viewer.show(Evidence(attachment_id=a["attachment_id"],
+                                                    locator=a["evidence_locator"] or "",
+                                                    quote=a["evidence_quote"] or ""),
+                                           key=f"qa_{a['id']}")
 
-    st.subheader("Documents")
-    docs = data.documents(rfx["id"])
-    if not docs:
-        st.info("No documents received yet. Quotations, certificates and reports appear here "
-                "as replies arrive.")
-    else:
-        dsel = st.dataframe(
-            pd.DataFrame([{"Vendor": d["vendor_name"], "File": d["filename"],
-                           "Kind": (d["kind"] or "").capitalize(),
-                           "Size (KB)": round((d["size_bytes"] or 0) / 1024, 1),
-                           "Received": copy.date_time(d["received_at"])} for d in docs]),
-            hide_index=True, width="stretch", on_select="rerun",
-            selection_mode="single-row", key="docs")
-        if dsel and dsel.selection.rows:
-            d = docs[dsel.selection.rows[0]]
-            source_viewer.show(Evidence(attachment_id=d["id"], locator="", quote=""),
-                               key=f"doc_{d['id']}")
+    with st.container(border=True):
+        st.subheader("Documents")
+        st.caption("Every file vendors sent: quotations, certificates and reports. Select one "
+                   "to read it beside the list.")
+        docs = data.documents(rfx["id"])
+        if not docs:
+            st.info("No documents received yet. Quotations, certificates and reports appear "
+                    "here as replies arrive.")
+        else:
+            rows_sel = selected_rows("docs")
+            d = docs[rows_sel[0]] if rows_sel and rows_sel[0] < len(docs) else None
+            left, right = side_panel.columns(d is not None)
+            with left:
+                st.dataframe(
+                    pd.DataFrame([{"Vendor": x["vendor_name"], "File": x["filename"],
+                                   "Kind": (x["kind"] or "").capitalize(),
+                                   "Size (KB)": round((x["size_bytes"] or 0) / 1024, 1),
+                                   "Received": copy.date_time(x["received_at"])}
+                                  for x in docs]),
+                    hide_index=True, width="stretch", on_select="rerun",
+                    selection_mode="single-row", key="docs")
+            if d is not None:
+                with side_panel.panel(right, "document", f"{d['filename']} · {d['vendor_name']}",
+                                      "docs", subtitle=(f"{(d['kind'] or 'File').capitalize()}"
+                                                        f" · received "
+                                                        f"{copy.date_time(d['received_at'])}")):
+                    source_viewer.show(Evidence(attachment_id=d["id"], locator="", quote=""),
+                                       key=f"doc_{d['id']}")

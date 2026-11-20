@@ -84,6 +84,23 @@ body, .stMarkdown, [data-testid="stDataFrame"] { font-variant-numeric: tabular-n
 .lv-quote { background: #FFF8E1; border-left: 3px solid #F5C451; padding: 0.4rem 0.7rem;
   border-radius: 0 4px 4px 0; margin: 0.2rem 0 0.3rem; }
 
+/* Detail panel beside a grid (components/side_panel.py). The column holding the panel
+   stays in view while the page scrolls and scrolls on its own when taller than the window. */
+[data-testid="stColumn"]:has([class*="st-key-lv-panel-"]) {
+  position: sticky; top: 0.75rem; align-self: flex-start;
+  max-height: calc(100vh - 1.5rem); overflow-y: auto; overflow-x: hidden; }
+[class*="st-key-lv-panel-"] { background: #FFFFFF; min-width: 0; }
+[class*="st-key-lv-close-"] { flex: 0 0 auto !important; width: auto !important; }
+[class*="st-key-lv-close-"] button { white-space: nowrap; }
+[class*="st-key-lv-panel-"] [data-testid="stImage"] img,
+[class*="st-key-lv-panel-"] img { max-width: 100%; height: auto; }
+[class*="st-key-lv-panel-"] pre, [class*="st-key-lv-panel-"] code { white-space: pre-wrap;
+  word-break: break-word; }
+
+/* Compare: sections and tabs read as separate parts of the page */
+[data-testid="stTabs"] [role="tablist"] { border-bottom: 2px solid #E3E7EB; gap: 1.2rem; }
+[data-testid="stTabs"] [role="tab"] p { font-size: 1rem; font-weight: 600; }
+
 /* Sidebar: section labels as small caps */
 [data-testid="stSidebarNav"] header, [data-testid="stNavSectionHeader"] {
   text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.72rem !important;

@@ -99,16 +99,51 @@ def _xlsx(path: Path, loc: sr.Locator, key: str) -> None:
     )
     title, df = sr.xlsx_sheet(path, sheet)
     target = sr.cell_position(loc.cell) if loc.kind == "cell" and loc.sheet == title else None
+    window = None
+    if target:
+        window = sr.cell_window(target[0], target[1], len(df.index), len(df.columns),
+                                row_first_col=sr.first_filled_col(df, target[0]))
+    if window is None:  # no cell to point at, or the cell is not on this sheet
+        _sheet_grid(df, target, height=320)
+        return
+    first_row, last_row, first_col, last_col = window
+    head = sr.header_row(df, target[0])  # the headings of the table the cell is in
+    above = [head] if head and head < first_row else []  # pinned on top when out of range
+    rows = above + list(range(first_row, last_row + 1))
+    part = df.loc[rows, df.columns[first_col - 1:last_col]]
+    st.caption(f"The vendor's figure: sheet {loc.sheet}, cell {loc.cell}"
+               + (f". Row {head} shows the table's headings." if head else "."))
+    _sheet_grid(part, target, header=head, height="content", pin_target=True)
+    with st.expander("Show the whole sheet"):
+        _sheet_grid(df, target, height=320)
 
-    def highlight(frame):
+
+def _sheet_grid(df, target: tuple[int, str] | None, header: int | None = None,
+                height="content", pin_target: bool = False) -> None:
+    """A sheet (or part of one) with Excel row numbers and column letters, the cited cell
+    marked, a heading row greyed, and long text columns capped so prices stay in view.
+    pin_target keeps the cited column next to the row numbers, so it stays in view even
+    in a narrow panel (its letter still says where it is in the sheet)."""
+    config = {c: st.column_config.TextColumn(width=300) for c in df.columns
+              if df[c].astype(str).str.len().max() > 40}
+    if pin_target and target and target[1] in df.columns:
+        config[target[1]] = st.column_config.TextColumn(pinned=True)
+    # Row numbers as text so a heading row above the window keeps its real number.
+    shown = df.set_axis([str(r) for r in df.index])
+    target_label = (str(target[0]), target[1]) if target else None
+    header_label = str(header) if header else None
+
+    def marks_text(frame):
         styles = frame.astype(str).map(lambda _: "")
-        if target and target[0] in styles.index and target[1] in styles.columns:
-            styles.loc[target[0], target[1]] = "background-color: #ffd54f; font-weight: bold"
+        if header_label in styles.index:
+            styles.loc[header_label, :] = "background-color: #F1F3F5; font-weight: 600"
+        if target_label and target_label[0] in styles.index and \
+                target_label[1] in styles.columns:
+            styles.loc[target_label] = "background-color: #FFC233; font-weight: 700"
         return styles
 
-    st.dataframe(df.style.apply(highlight, axis=None), width="stretch", height=280)
-    if target:
-        st.caption(f"Highlighted: {loc.sheet}!{loc.cell}")
+    st.dataframe(shown.style.apply(marks_text, axis=None), width="stretch", height=height,
+                 column_config=config)
 
 
 def _text_blocks(blocks: list[str], quote: str, loc: sr.Locator) -> None:
